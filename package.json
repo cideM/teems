@@ -1,0 +1,41 @@
+{
+  "name": "teems",
+  "version": "0.0.0",
+  "description": "Switch themes by modifying config files",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cideM/teems.git"
+  },
+  "homepage": "https://github.com/cideM/teems",
+  "bugs": "https://github.com/cideM/teems/issues",
+  "author": {
+    "name": "Florian Beeres",
+    "email": "fbeeres@gmail.com",
+    "url": "github.com/cideM"
+  },
+  "scripts": {
+    "lint": "eslint --config ./.eslintrc.json --ext .js ./",
+    "test": "npm run lint && ava --verbose"
+  },
+  "keywords": [
+    "Themes,",
+    "ES6,",
+    "Node",
+    ""
+  ],
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "mz": "^2.7.0",
+    "user-home": "^2.0.0"
+  },
+  "devDependencies": {
+    "ava": "^0.22.0",
+    "eslint": "^4.7.0",
+    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-config-prettier": "^2.5.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-prettier": "^2.2.0",
+    "prettier": "^1.7.0"
+  }
+}

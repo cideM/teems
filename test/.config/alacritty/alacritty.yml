@@ -1,0 +1,31 @@
+# Colors (Hyper)
+colors:
+  # Default colors
+  primary:
+    background: 'foo'
+    foreground: 'foo'
+  cursor:
+    text: 'foo'
+    cursor: 'foo'
+
+  # Normal colors
+  normal:
+    black: 'foo'
+    red: 'foo'
+    green: 'foo'
+    yellow: 'foo'
+    blue: 'foo'
+    magenta: 'foo'
+    cyan: 'foo'
+    white: 'foo'
+
+  # Bright colors
+  bright:
+    black: 'foo2'
+    red: 'foo2'
+    green: 'foo2'
+    yellow: 'foo2'
+    blue: 'foo2'
+    magenta: 'foo2'
+    cyan: 'foo2'
+    white: 'foo2'
