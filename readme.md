@@ -7,37 +7,11 @@
 
 ## Install
 
-```
-$ npm install --save teems
-```
-
-## Usage
-
-```js
-const teems = require('teems');
-
-teems('unicorns');
-//=> 'unicorns & rainbows'
+```shell
+npm install --save teems
 ```
 
-## API
-
-### teems(input, [options])
-
-#### input
-
-Type: `string`
-
-Lorem ipsum.
-
-#### options
-
-##### foo
-
-Type: `boolean`  
-Default: `false`
-
-Lorem ipsum.
+TODO
 
 ## Contribute
 
