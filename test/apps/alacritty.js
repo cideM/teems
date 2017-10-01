@@ -1,20 +1,10 @@
-const test = require("ava");
-const path = require("path");
-const fs = require("mz/fs");
-const { makeSelector, makeTransforms } = require("../transforms/alacritty");
-const transform = require("../transformer");
-const mockThemes = require("./helpers/mockThemes");
-
-const mockConfig = [
-  {
-    name: "alacritty",
-    paths: [
-      path.join(__dirname, "./.config/alacritty/alacritty.yml"),
-      path.join(__dirname, "foo/foo.yml")
-    ],
-    makeTransforms
-  }
-];
+import test from "ava";
+import path from "path";
+import fs from "mz/fs";
+import { makeSelector, makeTransforms } from "../../source/apps/alacritty";
+import transform from "../../source/transformer";
+import mockThemes from "../helpers/mockThemes";
+import apps from "../helpers/apps";
 
 test("makeSelector creates correct regexp", t => {
   const selector = makeSelector("black");
@@ -26,10 +16,10 @@ test("makeSelector creates correct regexp", t => {
 });
 
 test("transform transforms duplicate colors (as in alacritty conf)", t => {
-  const targetFilePath = mockConfig[0].paths[0];
+  const targetFilePath = apps[0].paths[0];
   const targetFile = fs.readFileSync(targetFilePath, { encoding: "utf8" });
   const expected = fs.readFileSync(
-    path.join(__dirname, ".config/alacritty/alacritty.expected.yml"),
+    path.join(__dirname, "../.config/alacritty/alacritty.expected.yml"),
     { encoding: "utf8" }
   );
 

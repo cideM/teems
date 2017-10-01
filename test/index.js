@@ -1,64 +1,24 @@
-const test = require("ava");
-const { getConfigFileAndPath, main } = require("../");
-const { makeTransforms } = require("../transforms/alacritty");
-const path = require("path");
-const fs = require("fs");
+import test from "ava";
+import path from "path";
+import fs from "fs";
+import mockThemes from "./helpers/mockThemes";
+import apps from "./helpers/apps";
+import { getConfigFileAndPath, main } from "../source/";
 
-const mockThemes = [
-  {
-    name: "test",
-    colors: {
-      foreground: "foo",
-      background: "foo",
-      color0: "foo",
-      color1: "foo",
-      color2: "foo",
-      color3: "foo",
-      color4: "foo",
-      color5: "foo",
-      color6: "foo",
-      color7: "foo",
-      color8: "foo2",
-      color9: "foo2",
-      color10: "foo2",
-      color11: "foo2",
-      color12: "foo2",
-      color13: "foo2",
-      color14: "foo2",
-      color15: "foo2"
-    }
-  }
-];
-
-const mockApps = [
-  {
-    name: "alacritty",
-    paths: [
-      path.join(__dirname, "./.config/alacritty/alacritty.yml"),
-      path.join(__dirname, "foo/foo.yml")
-    ],
-    makeTransforms
-  }
-];
+const alacrittyPath = path.join(__dirname, "./.config/alacritty/alacritty.yml");
+const alacrittyBackupPath = path.join(
+  __dirname,
+  "./.config/alacritty/alacritty.backup.yml"
+);
 
 test.beforeEach(t => {
-  const backup = fs.readFileSync(
-    path.join(__dirname, "./.config/alacritty/alacritty.backup.yml"),
-    { encoding: "utf8" }
-  );
-  fs.writeFileSync(
-    path.join(__dirname, "./.config/alacritty/alacritty.yml"),
-    backup,
-    { encoding: "utf8" }
-  );
+  const backup = fs.readFileSync(alacrittyBackupPath, { encoding: "utf8" });
+  fs.writeFileSync(alacrittyPath, backup, { encoding: "utf8" });
   t.context.backup = backup; // eslint-disable-line
 });
 
 test("getConfigFileAndPath should find one file and return content", t => {
-  const configFiles = getConfigFileAndPath([
-    path.join(__dirname, "./.config/alacritty/alacritty.yml"),
-    path.join(__dirname, "./.config/alacritty/alacritty.backup.yml")
-  ]);
+  const configFiles = getConfigFileAndPath([alacrittyPath]);
   t.truthy(configFiles.length, "Should find and return file");
   t.is(configFiles[1], t.context.backup, "Should find and return file");
 });
@@ -75,15 +35,12 @@ test("Main function returns a function that takes one string", t => {
 });
 
 test("Main function transforms colors in a file", async t => {
-  const activateTheme = main(mockApps, mockThemes);
+  const activateTheme = main(apps, mockThemes);
   await activateTheme("test");
   const expected = fs.readFileSync(
     path.join(__dirname, "./.config/alacritty/alacritty.expected.yml"),
     { encoding: "utf8" }
   );
-  const result = fs.readFileSync(
-    path.join(__dirname, "./.config/alacritty/alacritty.yml"),
-    { encoding: "utf8" }
-  );
+  const result = fs.readFileSync(alacrittyPath, { encoding: "utf8" });
   t.is(result, expected, "Files should match");
 });

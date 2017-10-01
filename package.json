@@ -15,7 +15,7 @@
     "url": "github.com/cideM"
   },
   "scripts": {
-    "lint": "eslint --config ./.eslintrc.json --ext .js ./",
+    "lint": "eslint --ext .js ./",
     "test": "npm run lint && ava --verbose"
   },
   "keywords": [

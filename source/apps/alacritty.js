@@ -1,14 +1,16 @@
 const makeSelector = word => new RegExp(`(${word}).*('[a-zA-Z0-9]*')`);
 
+const transformColor = color => color.replace(/#/, "0x");
+
 const makeTransform = (selector, newColor) => [
   makeSelector(selector),
-  (match, p1) => `${p1}: '${newColor}'`
+  (match, p1) => `${p1}: '${transformColor(newColor)}'`
 ];
 
 const makeTransforms = colors => [
   makeTransform("foreground", colors.foreground),
   makeTransform("background", colors.background),
-  makeTransform("text", colors.background),
+  makeTransform("text", colors.foreground),
   makeTransform("cursor", colors.foreground),
   makeTransform("black", colors.color0),
   makeTransform("red", colors.color1),

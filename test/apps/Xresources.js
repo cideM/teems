@@ -1,18 +1,15 @@
-const test = require("ava");
-const path = require("path");
-const fs = require("mz/fs");
-const {
-  makeSelectorWord,
-  makeTransforms
-} = require("../transforms/Xresources");
-const transform = require("../transformer");
-const mockThemes = require("./helpers/mockThemes");
+import test from "ava";
+import path from "path";
+import fs from "mz/fs";
+import { makeSelectorWord, makeTransforms } from "../../source/apps/Xresources";
+import transform from "../../source/transformer";
+import mockThemes from "../helpers/mockThemes";
 
 const mockConfig = [
   {
     name: "Xresources",
     paths: [
-      path.join(__dirname, "./.config/Xresources/foo.conf"),
+      path.join(__dirname, "../.config/Xresources/foo.conf"),
       path.join(__dirname, "foo/foo.yml")
     ],
     makeTransforms
@@ -29,7 +26,7 @@ test("transform transforms colors", t => {
   const targetFilePath = mockConfig[0].paths[0];
   const targetFile = fs.readFileSync(targetFilePath, { encoding: "utf8" });
   const expected = fs.readFileSync(
-    path.join(__dirname, ".config/Xresources/foo.expected.conf"),
+    path.join(__dirname, "../.config/Xresources/foo.expected.conf"),
     { encoding: "utf8" }
   );
 
