@@ -1,5 +1,5 @@
-const test = require("ava");
-const transform = require("../transformer");
+import test from "ava";
+import transform from "../source/transformer";
 
 const mockThemes = [
   {
