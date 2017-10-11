@@ -17,10 +17,10 @@ test.beforeEach(t => {
   t.context.backup = backup; // eslint-disable-line
 });
 
-test("getConfigFileAndPath should find one file and return content", t => {
-  const configFiles = getConfigFileAndPath([alacrittyPath]);
+test("getConfigFileAndPath should find one file and return content", async t => {
+  const configFiles = await getConfigFileAndPath([alacrittyPath]);
   t.truthy(configFiles.length, "Should find and return file");
-  t.is(configFiles[1], t.context.backup, "Should find and return file");
+  t.is(configFiles[0][1], t.context.backup, "Should find and return file");
 });
 
 test("Main function takes one array", t => {

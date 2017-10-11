@@ -1,6 +1,6 @@
 import test from "ava";
 import path from "path";
-import fs from "mz/fs";
+import * as fs from "fs";
 import { makeSelectorWord, makeTransforms } from "../../source/apps/Xresources";
 import transform from "../../source/transformer";
 import mockThemes from "../helpers/mockThemes";

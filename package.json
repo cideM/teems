@@ -27,6 +27,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "mz": "^2.7.0",
+    "ramda": "^0.25.0",
     "user-home": "^2.0.0"
   },
   "devDependencies": {
