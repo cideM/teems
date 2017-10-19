@@ -1,5 +1,6 @@
 const { makeTransforms: makeAlacrittyTransforms } = require("./alacritty");
 const { makeTransforms: makeXTransforms } = require("./Xresources");
+const { makeTransforms: makeTermiteTransforms } = require("./termite");
 
 module.exports = [
   {
@@ -11,5 +12,10 @@ module.exports = [
     name: "X",
     paths: [],
     makeTransforms: makeXTransforms
+  },
+  {
+    name: "termite",
+    paths: [],
+    makeTransforms: makeTermiteTransforms
   }
 ];

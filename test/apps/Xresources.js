@@ -4,17 +4,7 @@ import * as fs from "fs";
 import { makeSelectorWord, makeTransforms } from "../../source/apps/Xresources";
 import transform from "../../source/transformer";
 import mockThemes from "../helpers/mockThemes";
-
-const mockConfig = [
-  {
-    name: "Xresources",
-    paths: [
-      path.join(__dirname, "../.config/Xresources/foo.conf"),
-      path.join(__dirname, "foo/foo.yml")
-    ],
-    makeTransforms
-  }
-];
+import { getConfig } from "../helpers/apps";
 
 test("makeSelector creates correct regexp", t => {
   const selector = makeSelectorWord("foreground");
@@ -23,7 +13,7 @@ test("makeSelector creates correct regexp", t => {
 });
 
 test("transform transforms colors", t => {
-  const targetFilePath = mockConfig[0].paths[0];
+  const targetFilePath = getConfig("Xresources").paths[0];
   const targetFile = fs.readFileSync(targetFilePath, { encoding: "utf8" });
   const expected = fs.readFileSync(
     path.join(__dirname, "../.config/Xresources/foo.expected.conf"),
