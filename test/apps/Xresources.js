@@ -1,28 +1,20 @@
 import test from "ava";
-import path from "path";
-import * as fs from "fs";
-import { makeSelectorWord, makeTransforms } from "../../source/apps/Xresources";
-import transform from "../../source/transformer";
-import mockThemes from "../helpers/mockThemes";
-import { getConfig } from "../helpers/apps";
+import {
+  makeSelectorWord,
+  makeSelectorColor
+} from "../../source/apps/Xresources";
 
-test("makeSelector creates correct regexp", t => {
+test("makeSelectorWord regexp matches", t => {
   const selector = makeSelectorWord("foreground");
   const color = `*.foreground: #65737E`;
-  t.truthy(selector.test(color), `Should find ${selector} in ${color}`);
+  const matchResult = color.match(selector);
+  t.deepEqual(matchResult[0], "foreground: #65737E");
 });
 
-test("transform transforms colors", t => {
-  const targetFilePath = getConfig("Xresources").paths[0];
-  const targetFile = fs.readFileSync(targetFilePath, { encoding: "utf8" });
-  const expected = fs.readFileSync(
-    path.join(__dirname, "../.config/Xresources/foo.expected.conf"),
-    { encoding: "utf8" }
-  );
-
-  const result = transform(
-    targetFile.split("\n"),
-    makeTransforms(mockThemes[0].colors)
-  );
-  t.deepEqual(result.join("\n"), expected);
+test("makeSelectorColor regexp matches", t => {
+  const selector = makeSelectorColor();
+  const color = `*.color0: #65737E`;
+  const matchResult = color.match(selector);
+  t.deepEqual(matchResult[0], "*.color0: #65737E");
+  t.deepEqual(matchResult[1], "0");
 });

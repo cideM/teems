@@ -8,10 +8,10 @@ const okOrNotFound = error => !error || (error && error.code === "ENOENT");
 // readFileQuiet: string => Promise<[string, string]>
 function readFileQuiet(path) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path, { encoding: "utf8" }, (err, data) => {
+    fs.readFile(path, { encoding: "utf8" }, (err, data = "") => {
       if (okOrNotFound(err)) {
         // fail silently if the file is not found
-        resolve([path, data || ""]);
+        resolve([path, data]);
       } else {
         reject(err);
       }
@@ -61,13 +61,18 @@ function writeConfig([path, config]) {
   });
 }
 
+const getThemeName = R.prop("name");
+
 function main(apps, themes) {
   assert.ok(Array.isArray(apps), "Config must be an array");
   assert.ok(Array.isArray(themes), "Themes must be an array");
 
   return function activateTheme(selectedTheme) {
     assert.ok(typeof selectedTheme === "string", "Expected a string");
-    const themeConfig = themes.find(theme => theme.name === selectedTheme);
+    const themeConfig = R.find(
+      R.compose(R.equals(selectedTheme), getThemeName),
+      themes
+    );
 
     return Promise.all(R.map(makeNewConfig(themeConfig), apps))
       .then(R.map(writeConfig))

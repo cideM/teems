@@ -8,7 +8,7 @@ const configs = [
   {
     name: "alacritty",
     paths: [
-      path.join(__dirname, "../.config/alacritty/alacritty.yml"),
+      path.join(__dirname, "../config/tested/alacritty/alacritty.yml"),
       path.join(__dirname, "foo/foo.yml")
     ],
     makeTransforms: alacrittyMakeTransforms
@@ -16,7 +16,7 @@ const configs = [
   {
     name: "Xresources",
     paths: [
-      path.join(__dirname, "../.config/Xresources/foo.conf"),
+      path.join(__dirname, "../config/tested/Xresources/config"),
       path.join(__dirname, "foo/foo.yml")
     ],
     makeTransforms: XMakeTransforms
@@ -24,7 +24,7 @@ const configs = [
   {
     name: "termite",
     paths: [
-      path.join(__dirname, "../.config/termite/config"),
+      path.join(__dirname, "../config/tested/termite/config"),
       path.join(__dirname, "foo/foo.yml")
     ],
     makeTransforms: termiteMakeTransforms

@@ -1,0 +1,13 @@
+#include "themes/dracula"
+
+URxvt.imLocale: en_US.UTF-8
+URxvt.saveLines: 5000
+URxvt.scrollBar: false
+URxvt.secondaryScroll: true
+URxvt.font: xft:Iosevka Term:style=Regular:pixelsize=18:antialias=true
+URxvt.boldFont: xft:Iosevka Term:style=Regular:pixelsize=18:antialias=true
+URxvt.perl-ext-common: default,matcher
+URxvt.urlLauncher: firefox
+URxvt.matcher.button: 1
+URxvt.internalBorder: 15
+URxvt.loginShell: true

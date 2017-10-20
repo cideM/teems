@@ -26,8 +26,10 @@
   ],
   "dependencies": {
     "bluebird": "^3.5.0",
+    "find": "^0.2.7",
     "mz": "^2.7.0",
     "ramda": "^0.25.0",
+    "recursive-copy": "^2.0.6",
     "user-home": "^2.0.0"
   },
   "devDependencies": {
