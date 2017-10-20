@@ -5,7 +5,7 @@ import * as find from "find";
 import R from "ramda";
 import mockThemes from "./helpers/mockThemes";
 import apps from "./helpers/apps";
-import { getConfigFileAndPath, main } from "../source/";
+import { getConfigFileAndPath, initialize } from "../source/";
 import restoreFiles from "./helpers/setup";
 
 const utf = { encoding: "utf8" };
@@ -40,19 +40,19 @@ test("getConfigFileAndPath should find one file and return content", async t => 
   );
 });
 
-test("Main function takes two parameters", t => {
-  t.is(main.length, 2);
-  t.throws(() => main("string", "a"), Error);
+test("initialize function takes two parameters", t => {
+  t.is(initialize.length, 2);
+  t.throws(() => initialize("string", "a"), Error);
 });
 
-test("Main function returns a function that takes one string", t => {
-  const app = main([], []);
+test("initialize function returns a function that takes one string", t => {
+  const app = initialize([], []);
   t.is(app.length, 1);
   t.throws(() => app([]), Error);
 });
 
-test("Main function transforms colors in a file", async t => {
-  const activateTheme = main(apps, mockThemes);
+test("initialize function transforms colors in a file", async t => {
+  const activateTheme = initialize(apps, mockThemes);
   await activateTheme("test");
   const expectedFiles = await findFiles(
     path.join(__dirname, "./config/expected")

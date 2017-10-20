@@ -63,7 +63,7 @@ function writeConfig([path, config]) {
 
 const getThemeName = R.prop("name");
 
-function main(apps, themes) {
+function initialize(apps, themes) {
   assert.ok(Array.isArray(apps), "Config must be an array");
   assert.ok(Array.isArray(themes), "Themes must be an array");
 
@@ -83,6 +83,6 @@ function main(apps, themes) {
 }
 
 module.exports = {
-  main,
+  initialize,
   getConfigFileAndPath
 };

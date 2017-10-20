@@ -1,21 +1,25 @@
+const path = require("path");
+const os = require("os");
 const { makeTransforms: makeAlacrittyTransforms } = require("./alacritty");
 const { makeTransforms: makeXTransforms } = require("./Xresources");
 const { makeTransforms: makeTermiteTransforms } = require("./termite");
 
+const home = os.homedir();
+
 module.exports = [
   {
     name: "alacritty",
-    paths: [],
+    paths: [path.join(home, ".config/alacritty/alacritty.yml")],
     makeTransforms: makeAlacrittyTransforms
   },
   {
-    name: "X",
-    paths: [],
+    name: "Xresources",
+    paths: [path.join(home, "./.Xresources")],
     makeTransforms: makeXTransforms
   },
   {
     name: "termite",
-    paths: [],
+    paths: [path.join(home, ".config/termite/config")],
     makeTransforms: makeTermiteTransforms
   }
 ];
