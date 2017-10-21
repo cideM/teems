@@ -2,64 +2,53 @@ const assert = require("assert");
 const fs = require("fs");
 const transform = require("./transformer");
 const R = require("ramda");
+const util = require("util");
 
 const okOrNotFound = error => !error || (error && error.code === "ENOENT");
 
-// readFileQuiet: string => Promise<[string, string]>
-function readFileQuiet(path) {
-  return new Promise((resolve, reject) => {
+const readFileQuiet = path =>
+  new Promise((resolve, reject) => {
     fs.readFile(path, { encoding: "utf8" }, (err, data = "") => {
       if (okOrNotFound(err)) {
         // fail silently if the file is not found
-        resolve([path, data]);
+        resolve({ path, data });
       } else {
         reject(err);
       }
     });
   });
-}
 
-// lastHasLength: any[] => boolean
-const lastHasLength = R.compose(Boolean, R.length, R.last);
+const tryAllPaths = R.compose(R.map(readFileQuiet), R.prop("paths"));
+const objectWithData = R.compose(Boolean, R.prop("data"));
 
-// getConfigFileAndPath: string[] => Promise<string[]>
-const getConfigFileAndPath = paths =>
-  R.compose(xs => Promise.all(xs), R.map(readFileQuiet))(paths)
-    .then(R.filter(lastHasLength))
-    .catch(console.log);
+const addConfigAndPathToAppObject = app =>
+  Promise.all(tryAllPaths(app))
+    .then(
+      R.either(R.find(objectWithData), () => {
+        throw new Error(`No config file found for ${app.name}`);
+      })
+    )
+    .then(R.merge(app));
 
 const makeNewConfig = R.curry(
   (theme, app) =>
-    new Promise((resolve, reject) => {
-      const { paths, name, makeTransforms } = app;
-
-      getConfigFileAndPath(paths).then(pathsAndContents => {
-        if (!pathsAndContents.length) {
-          console.log(`Found no config file for ${name}.`);
-          reject();
-        } else {
-          const [path, content] = R.last(pathsAndContents);
-          const newConfig = transform(
-            content.split("\n"),
-            makeTransforms(theme.colors)
-          );
-          resolve([path, newConfig.join("\n")]);
-        }
-      });
+    new Promise(resolve => {
+      const { data, makeTransforms } = app;
+      const newConfig = transform(
+        data.split("\n"),
+        makeTransforms(theme.colors)
+      );
+      resolve(R.merge(app, { config: newConfig.join("\n") }));
     })
 );
 
-function writeConfig([path, config]) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(path, config, "utf8", err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
+const writeConfig = app => {
+  const { path, config } = app;
+
+  return util.promisify(fs.writeFile)(path, config, "utf8").then(file =>
+    R.merge(app, { data: file })
+  );
+};
 
 const getThemeName = R.prop("name");
 
@@ -69,20 +58,29 @@ function initialize(apps, themes) {
 
   return function activateTheme(selectedTheme) {
     assert.ok(typeof selectedTheme === "string", "Expected a string");
-    const themeConfig = R.find(
+    const theme = R.find(
       R.compose(R.equals(selectedTheme), getThemeName),
       themes
     );
 
-    return Promise.all(R.map(makeNewConfig(themeConfig), apps))
-      .then(R.map(writeConfig))
-      .then(xs => Promise.all(xs))
-      .then(() => console.log("done"))
-      .catch(console.log);
+    const run = R.composeP(
+      writeConfig,
+      makeNewConfig(theme),
+      addConfigAndPathToAppObject
+    );
+
+    return R.forEach(app => {
+      run(app)
+        .then(app2 => {
+          console.log(`Changed config for ${app2.name} at ${app2.path}`);
+        })
+        .catch(console.log);
+    }, apps);
   };
 }
 
 module.exports = {
   initialize,
-  getConfigFileAndPath
+  addConfigAndPathToAppObject,
+  readFileQuiet
 };

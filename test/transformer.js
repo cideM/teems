@@ -31,18 +31,16 @@ foreground: colors!foreground
 color0: colors!0
 `;
 
-test("transform takes a string array and a transforms array", t => {
-  t.is(transform.length, 2);
-  t.throws(() => transform(mockFile, {}, Error));
+test("transform", t => {
+  t.is(transform.length, 2, "Should take two parameters");
+  t.throws(() => transform(mockFile, {}), Error);
   t.notThrows(() =>
     transform(["test"], mockAppTransforms(mockThemes[0].colors))
   );
-});
 
-test("transform replaces colors", t => {
   const result = transform(
     mockFile.split("\n"),
     mockAppTransforms(mockThemes[0].colors)
   );
-  t.deepEqual(result.join("\n"), expected);
+  t.deepEqual(result.join("\n"), expected, "Should transform colors");
 });

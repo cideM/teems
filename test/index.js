@@ -1,21 +1,18 @@
 import test from "ava";
 import path from "path";
 import fs from "fs";
-import * as find from "find";
 import R from "ramda";
 import mockThemes from "./helpers/mockThemes";
+import findFiles from "./helpers/findFiles";
 import apps from "./helpers/apps";
-import { getConfigFileAndPath, initialize } from "../source/";
+import {
+  addConfigAndPathToAppObject,
+  readFileQuiet,
+  initialize
+} from "../source/";
 import restoreFiles from "./helpers/setup";
 
 const utf = { encoding: "utf8" };
-
-const findFiles = async dirPath =>
-  new Promise(resolve => {
-    find.file(dirPath, files => {
-      resolve(files);
-    });
-  });
 
 test.before(async () => {
   try {
@@ -25,33 +22,47 @@ test.before(async () => {
   }
 });
 
-const alacrittyPath = path.join(
-  __dirname,
-  "./config/tested/alacritty/alacritty.yml"
-);
+const testApp = apps[0];
+const { paths } = testApp;
+const validPath = paths[0];
 
-test("getConfigFileAndPath should find one file and return content", async t => {
-  const configFiles = await getConfigFileAndPath([alacrittyPath]);
-  t.truthy(configFiles.length, "Should find and return file");
-  t.is(
-    configFiles[0][1],
-    fs.readFileSync(alacrittyPath, { encoding: "utf8" }),
-    "Should find and return file"
+test("readFileQuiet", async t => {
+  const result = await readFileQuiet("foo");
+  t.deepEqual(
+    result,
+    {
+      path: "foo",
+      data: ""
+    },
+    "Should return path and empty string for invalid path"
   );
 });
 
-test("initialize function takes two parameters", t => {
-  t.is(initialize.length, 2);
-  t.throws(() => initialize("string", "a"), Error);
+test("addConfigAndPathToAppObject", async t => {
+  const configFile = await addConfigAndPathToAppObject(testApp);
+  t.is(
+    configFile.data,
+    fs.readFileSync(validPath, { encoding: "utf8" }),
+    "Should include file content"
+  );
+  t.is(configFile.name, "alacritty", "Should include app name");
+
+  const error = await t.throws(
+    addConfigAndPathToAppObject({ paths: ["foo"], name: "bar" })
+  );
+  t.is(error.message, "No config file found for bar");
 });
 
-test("initialize function returns a function that takes one string", t => {
+test("initialize", t => {
+  t.is(initialize.length, 2);
+  t.throws(() => initialize("string", "a"), Error);
+
   const app = initialize([], []);
   t.is(app.length, 1);
   t.throws(() => app([]), Error);
 });
 
-test("initialize function transforms colors in a file", async t => {
+test("activateTheme", async t => {
   const activateTheme = initialize(apps, mockThemes);
   await activateTheme("test");
   const expectedFiles = await findFiles(
