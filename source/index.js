@@ -2,7 +2,9 @@ const assert = require("assert");
 const fs = require("fs");
 const transform = require("./transformer");
 const R = require("ramda");
+const nodepath = require("path");
 const util = require("util");
+const cp = require("recursive-copy");
 
 const okOrNotFound = error => !error || (error && error.code === "ENOENT");
 
@@ -52,9 +54,19 @@ const writeConfig = app => {
 
 const getThemeName = R.prop("name");
 
-function initialize(apps, themes) {
-  assert.ok(Array.isArray(apps), "Config must be an array");
+const appendBackup = path => `backup/${path}`;
+
+const backupFile = backupPath => filePath =>
+  cp(filePath, nodepath.resolve(backupPath, appendBackup(filePath)), {
+    overwrite: true,
+    expand: true,
+    dot: true
+  });
+
+function initialize(apps, themes, backupPath) {
+  assert.ok(Array.isArray(apps), "Apps must be an array");
   assert.ok(Array.isArray(themes), "Themes must be an array");
+  assert.ok(typeof backupPath === "string", "backupPath must be a string");
 
   return function activateTheme(selectedTheme) {
     assert.ok(typeof selectedTheme === "string", "Expected a string");
@@ -69,13 +81,22 @@ function initialize(apps, themes) {
       addConfigAndPathToAppObject
     );
 
-    return R.forEach(app => {
-      run(app)
-        .then(app2 => {
-          console.log(`Changed config for ${app2.name} at ${app2.path}`);
-        })
-        .catch(console.log);
+    R.forEach(app => {
+      R.compose(R.forEach(backupFile(backupPath)), R.prop("paths"))(app);
     }, apps);
+
+    return R.map(
+      app =>
+        run(app)
+          .then(app2 => {
+            console.log(
+              `\u{2698} Changed config for ${app2.name} at ${app2.path}`
+            );
+            return app2;
+          })
+          .catch(console.log),
+      apps
+    );
   };
 }
 

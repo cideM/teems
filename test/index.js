@@ -10,13 +10,14 @@ import {
   readFileQuiet,
   initialize
 } from "../source/";
-import restoreFiles from "./helpers/setup";
+import { restoreFiles, clearBackups } from "./helpers/setup";
 
 const utf = { encoding: "utf8" };
 
 test.before(async () => {
   try {
     await restoreFiles();
+    await clearBackups();
   } catch (error) {
     throw error;
   }
@@ -51,19 +52,32 @@ test("addConfigAndPathToAppObject", async t => {
     addConfigAndPathToAppObject({ paths: ["foo"], name: "bar" })
   );
   t.is(error.message, "No config file found for bar");
+
+  const foo = {
+    name: "foo",
+    paths: [path.join(__dirname, "foo/foo.yml")],
+    makeTransforms: null
+  };
+
+  const error2 = await t.throws(addConfigAndPathToAppObject(foo));
+  t.is(
+    error2.message,
+    "No config file found for foo",
+    "Should throw exception if no config file is found"
+  );
 });
 
 test("initialize", t => {
-  t.is(initialize.length, 2);
+  t.is(initialize.length, 3);
   t.throws(() => initialize("string", "a"), Error);
 
-  const app = initialize([], []);
+  const app = initialize([], [], path.join(__dirname, "foo"));
   t.is(app.length, 1);
   t.throws(() => app([]), Error);
 });
 
 test("activateTheme", async t => {
-  const activateTheme = initialize(apps, mockThemes);
+  const activateTheme = initialize(apps, mockThemes, path.join(__dirname));
   await activateTheme("test");
   const expectedFiles = await findFiles(
     path.join(__dirname, "./config/expected")
@@ -71,8 +85,10 @@ test("activateTheme", async t => {
   const resultsFiles = await findFiles(path.join(__dirname, "./config/tested"));
 
   R.forEach(([path1, path2]) => {
-    const file1 = fs.readFileSync(path1, utf);
-    const file2 = fs.readFileSync(path2, utf);
-    t.is(file1, file2, "Files should match");
+    const file1 = fs.readFileSync(path1, utf).split("\n");
+    const file2 = fs.readFileSync(path2, utf).split("\n");
+    R.forEach(([line1, line2]) => {
+      t.is(line1, line2);
+    }, R.zip(file1, file2));
   }, R.zip(expectedFiles, resultsFiles));
 });
