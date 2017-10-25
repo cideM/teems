@@ -17,10 +17,13 @@ const utf = { encoding: "utf8" };
 test.before(async () => {
   try {
     await restoreFiles();
-    await clearBackups();
   } catch (error) {
     throw error;
   }
+});
+
+test.after(async () => {
+  await clearBackups();
 });
 
 const testApp = apps[0];
@@ -77,12 +80,18 @@ test("initialize", t => {
 });
 
 test("activateTheme", async t => {
-  const activateTheme = initialize(apps, mockThemes, path.join(__dirname));
-  await activateTheme("test");
-  const expectedFiles = await findFiles(
-    path.join(__dirname, "./config/expected")
+  const activateTheme = initialize(
+    apps,
+    mockThemes,
+    path.join(__dirname, "backup/")
   );
-  const resultsFiles = await findFiles(path.join(__dirname, "./config/tested"));
+
+  await activateTheme("test");
+
+  const expectedFiles = await findFiles(
+    path.join(__dirname, "config/expected")
+  );
+  const resultsFiles = await findFiles(path.join(__dirname, "config/tested"));
 
   R.forEach(([path1, path2]) => {
     const file1 = fs.readFileSync(path1, utf).split("\n");
@@ -91,4 +100,9 @@ test("activateTheme", async t => {
       t.is(line1, line2);
     }, R.zip(file1, file2));
   }, R.zip(expectedFiles, resultsFiles));
+
+  t.truthy(
+    fs.statSync(path.join(__dirname, "backup/alacritty.yml")),
+    "Should backup files before transformations"
+  );
 });

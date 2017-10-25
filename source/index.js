@@ -2,9 +2,8 @@ const assert = require("assert");
 const fs = require("fs");
 const transform = require("./transformer");
 const R = require("ramda");
-const nodepath = require("path");
 const util = require("util");
-const cp = require("recursive-copy");
+const cp = require("cpr");
 
 const okOrNotFound = error => !error || (error && error.code === "ENOENT");
 
@@ -54,14 +53,15 @@ const writeConfig = app => {
 
 const getThemeName = R.prop("name");
 
-const appendBackup = path => `backup/${path}`;
+const cpOptions = {};
 
-const backupFile = backupPath => filePath =>
-  cp(filePath, nodepath.resolve(backupPath, appendBackup(filePath)), {
-    overwrite: true,
-    expand: true,
-    dot: true
-  });
+const backupApp = backupPath =>
+  R.compose(
+    R.forEach(path => {
+      cp(path, backupPath, cpOptions);
+    }),
+    R.prop("paths")
+  );
 
 function initialize(apps, themes, backupPath) {
   assert.ok(Array.isArray(apps), "Apps must be an array");
@@ -81,9 +81,7 @@ function initialize(apps, themes, backupPath) {
       addConfigAndPathToAppObject
     );
 
-    R.forEach(app => {
-      R.compose(R.forEach(backupFile(backupPath)), R.prop("paths"))(app);
-    }, apps);
+    R.forEach(backupApp(backupPath), apps);
 
     return R.map(
       app =>
