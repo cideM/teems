@@ -29,7 +29,7 @@ module.exports = [
     name: "termite",
     paths: [
       path.join(xdgBase.config, "termite/config"),
-      path.join(xdgBase.dataDirs, "termite/config"),
+      path.join(xdgBase.data, "termite/config"),
       path.join(home, ".config/termite/config")
     ],
     makeTransforms: makeTermiteTransforms
