@@ -75,6 +75,7 @@ function initialize(apps, themes, backupPath) {
       themes
     );
 
+    // compose promises together to form a single promise
     const run = R.composeP(
       writeConfig,
       makeNewConfig(theme),

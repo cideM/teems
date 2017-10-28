@@ -1,27 +1,31 @@
-function findMatchingTransformation(line, transforms) {
-  return transforms.find(transformation => {
-    const [regexp] = transformation;
-    return regexp.test(line);
-  });
-}
+const R = require("ramda");
 
-function transform(lines, transforms, result = []) {
+const lineMatchesRegexp = line => transform => {
+  const [regexp] = transform;
+  return regexp.test(line);
+};
+
+const findMatchingTransformation = (line, transforms) =>
+  R.find(lineMatchesRegexp(line), transforms);
+
+const transform = (lines, transforms, result = []) => {
   if (!lines.length) return result;
 
-  const [current] = lines;
+  const [currentLine] = lines;
   let remainingTransforms = transforms;
-  let transformedLine = current;
+  let transformedLine = currentLine;
 
   const matchingTransformation = findMatchingTransformation(
-    current,
+    currentLine,
     transforms
   );
 
   if (matchingTransformation) {
     const [regexp, replacer] = matchingTransformation;
-    transformedLine = current.replace(regexp, replacer);
-    remainingTransforms = transforms.filter(
-      transformation => transformation !== matchingTransformation
+    transformedLine = currentLine.replace(regexp, replacer);
+    remainingTransforms = R.filter(
+      transformation => transformation !== matchingTransformation,
+      transforms
     );
   }
 
@@ -30,6 +34,6 @@ function transform(lines, transforms, result = []) {
     remainingTransforms,
     result.length ? result.concat([transformedLine]) : [transformedLine]
   );
-}
+};
 
 module.exports = transform;

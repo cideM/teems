@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "Switch themes by modifying config files",
   "license": "MIT",
+  "engines": {
+    "node": ">= 8"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/cideM/teems.git"
@@ -13,7 +16,7 @@
   "author": {
     "name": "Florian Beeres",
     "email": "fbeeres@gmail.com",
-    "url": "github.com/cideM"
+    "url": "https://www.github.com/cideM"
   },
   "scripts": {
     "lint": "eslint --ext .js ./",
@@ -35,7 +38,8 @@
     "mz": "^2.7.0",
     "ramda": "^0.25.0",
     "recursive-copy": "^2.0.7",
-    "user-home": "^2.0.0"
+    "user-home": "^2.0.0",
+    "xdg-basedir": "^3.0.0"
   },
   "devDependencies": {
     "ava": "^0.22.0",

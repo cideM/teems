@@ -32,8 +32,6 @@ color0: colors!0
 `;
 
 test("transform", t => {
-  t.is(transform.length, 2, "Should take two parameters");
-  t.throws(() => transform(mockFile, {}), Error);
   t.notThrows(() =>
     transform(["test"], mockAppTransforms(mockThemes[0].colors))
   );
