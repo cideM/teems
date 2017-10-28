@@ -2,7 +2,7 @@ import test from "ava";
 import path from "path";
 import fs from "fs";
 import R from "ramda";
-import mockThemes from "./helpers/mockThemes";
+import mockThemes from "./helpers/mockThemes.json";
 import findFiles from "./helpers/findFiles";
 import apps from "./helpers/apps";
 import {
