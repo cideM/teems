@@ -63,12 +63,12 @@ const backupApp = backupPath =>
     R.prop("paths")
   );
 
-function initialize(apps, themes, backupPath) {
+function initialize(apps) {
   assert.ok(Array.isArray(apps), "Apps must be an array");
-  assert.ok(Array.isArray(themes), "Themes must be an array");
-  assert.ok(typeof backupPath === "string", "backupPath must be a string");
 
-  return function activateTheme(selectedTheme) {
+  return function activateTheme(selectedTheme, themes, backupPath) {
+    assert.ok(Array.isArray(themes), "Themes must be an array");
+    assert.ok(typeof backupPath === "string", "backupPath must be a string");
     assert.ok(typeof selectedTheme === "string", "Expected a string");
     const theme = R.find(
       R.compose(R.equals(selectedTheme), getThemeName),

@@ -71,22 +71,18 @@ test("addConfigAndPathToAppObject", async t => {
 });
 
 test("initialize", t => {
-  t.is(initialize.length, 3);
+  t.is(initialize.length, 1);
   t.throws(() => initialize("string", "a"), Error);
 
-  const app = initialize([], [], path.join(__dirname, "foo"));
-  t.is(app.length, 1);
+  const app = initialize([]);
+  t.is(app.length, 3);
   t.throws(() => app([]), Error);
 });
 
 test("activateTheme", async t => {
-  const activateTheme = initialize(
-    apps,
-    mockThemes,
-    path.join(__dirname, "backup/")
-  );
+  const activateTheme = initialize(apps);
 
-  await activateTheme("test");
+  await activateTheme("test", mockThemes, path.join(__dirname, "backup/"));
 
   const expectedFiles = await findFiles(
     path.join(__dirname, "config/expected")

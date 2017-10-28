@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/cideM/teems.git"
   },
+  "main": "dist/index",
   "homepage": "https://github.com/cideM/teems",
   "bugs": "https://github.com/cideM/teems/issues",
   "author": {
