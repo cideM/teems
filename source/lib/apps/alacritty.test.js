@@ -1,5 +1,5 @@
 import test from "ava";
-import { makeSelector } from "../../source/apps/alacritty";
+import { makeSelector } from "./alacritty";
 
 test("makeSelector regexp matches and preserves whitespace", t => {
   const selector = makeSelector("cursor");

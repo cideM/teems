@@ -1,5 +1,5 @@
 import test from "ava";
-import transform from "../source/transformer";
+import transform from "./transformer";
 
 const mockThemes = [
   {

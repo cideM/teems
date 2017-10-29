@@ -1,18 +1,20 @@
 const assert = require("assert");
 const fs = require("fs");
+const path = require("path");
 const transform = require("./transformer");
 const R = require("ramda");
 const util = require("util");
-const cp = require("cpr");
+
+const { COPYFILE_EXCL } = fs.constants;
 
 const okOrNotFound = error => !error || (error && error.code === "ENOENT");
 
-const readFileQuiet = path =>
+const readFileQuiet = filePath =>
   new Promise((resolve, reject) => {
-    fs.readFile(path, { encoding: "utf8" }, (err, data = "") => {
+    fs.readFile(filePath, { encoding: "utf8" }, (err, data = "") => {
       if (okOrNotFound(err)) {
         // fail silently if the file is not found
-        resolve({ path, configFile: data });
+        resolve({ filePath, configFile: data });
       } else {
         reject(err);
       }
@@ -42,24 +44,34 @@ const makeNewConfig = R.curry(
 );
 
 const writeConfig = app => {
-  const { path, newConfig } = app;
+  const { filePath, newConfig } = app;
 
-  return util.promisify(fs.writeFile)(path, newConfig, "utf8").then(() =>
+  return util.promisify(fs.writeFile)(filePath, newConfig, "utf8").then(() =>
     R.merge(app, { newConfig })
   );
 };
 
 const getThemeName = R.prop("name");
 
-const cpOptions = {};
+function backupApp(backupPath, app, i) {
+  const { paths } = app;
 
-const backupApp = backupPath =>
-  R.compose(
-    R.forEach(path => {
-      cp(path, backupPath, cpOptions);
-    }),
-    R.prop("paths")
-  );
+  paths.forEach(filePath => {
+    const fileName = R.last(filePath.split("/"));
+
+    try {
+      fs.copyFileSync(
+        filePath,
+        path.join(backupPath, `${fileName}.${i}`),
+        COPYFILE_EXCL
+      );
+    } catch (err) {
+      if (err && err.code !== "ENOENT") {
+        console.log(err);
+      }
+    }
+  });
+}
 
 function initialize(apps) {
   assert.ok(Array.isArray(apps), "Apps must be an array");
@@ -85,7 +97,7 @@ function initialize(apps) {
       addConfigAndPathToAppObject
     );
 
-    R.forEach(backupApp(backupPath), apps);
+    apps.forEach((app, i) => backupApp(backupPath, app, i));
 
     return R.map(run, apps);
   };

@@ -1,8 +1,5 @@
 import test from "ava";
-import {
-  makeSelectorWord,
-  makeSelectorColor
-} from "../../source/apps/Xresources";
+import { makeSelectorWord, makeSelectorColor } from "./Xresources";
 
 test("makeSelectorWord regexp matches and preserves whitespace", t => {
   const selector = makeSelectorWord("foreground");

@@ -1,10 +1,15 @@
 import test from "ava";
-import mockThemes from "../helpers/mockThemes.json";
-import { makeSelectorWord, makeTransforms } from "../../source/apps/nvim";
+import {
+  makeSelectorWord,
+  makeTransforms
+} from "../../../source/lib/apps/nvim";
 
 test("makeTransforms", t => {
   t.throws(() => makeTransforms({}), Error);
-  const result = makeTransforms(mockThemes[0].colors);
+  const result = makeTransforms({
+    color0: "#FFFFFF",
+    nvim: "foo"
+  });
   t.truthy(result[0][0], "Returns array of arrays");
 });
 

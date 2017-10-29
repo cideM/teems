@@ -1,5 +1,5 @@
 import test from "ava";
-import { makeSelectorColor, makeSelectorWord } from "../../source/apps/termite";
+import { makeSelectorColor, makeSelectorWord } from "./termite";
 
 test("makeSelectorWord", t => {
   const selector = makeSelectorWord("cursor");
