@@ -10,28 +10,17 @@
 I have spent obscene amounts of time trying out different color themes for terminals and/or terminal neovim. To this day I haven't really found any program that let's me switch colorschemes on the fly, without having to maintain different configuration files. If I want to change keyboard shortcuts in alacritty I want to do so in one file, without having to propagate those changes to all my other config files (containing different colors) through Git cherrypicking for example.
 This library is like the third attempt and it seems the most promising so far. 
 
+## CLI user instructions
+Please see the README for [teems-cli](https://github.com/cideM/teems-cli)
+
 ## How it works
+There are two important buildings blocks: an array of apps, containing the paths at which config files can be found, and a `makeTransforms` function. When called with a `colors` object, it will return an array of tuples. Each tuple consists of a RegExp selector and the replacer function.
+The library iterates over (through? under?) each app, uses the first config file it finds and then it runs *each line of the file* through *each transform, generated from `makeTransform(theme.colors)`*.
+At the very end, it then replaces the current config file with the modified one. In other words: I tried to keep as many functions as possible pure.
 
-It looks for configuration files in the locations indicated by each supported app. It reads each file and looks for the lines containing the color information. It then replaces each color with a color from the themefile you provided, from the theme you are currently activating. Before each operation, it performs a backup.
+Every app runs in its own promise chain. There is no `Promise.all`. The advantage is that whatever function needs to abort, can just throw an exception. It will not interfere with any other app. On the other hand, it can mean that 3/4 apps now have a new color scheme, because one threw an exception before `writeConfig`.
 
-## Roadmap
-
-* Add custom locations through config file
-* Support more apps
-  * [ ] URxvt
-  * [ ] Gnome terminal
-  * [ ] XFCE4-Terminal
-  * [x] nvim
-* Add support for RGBA (and possibly other) values
-
-## Supported apps
-
-* Alacritty
-* Termite
-* X (Xresources/Xdefaults)
-* nvim (see usage for how this works!)
-
-## Usage
+I make heavy use of `ramda` which I am planning on getting rid of to keep things simple.
 
 ```javascript
 // initialize :: apps[], themes[], string -> string -> apps[]
@@ -40,7 +29,7 @@ function initialize(apps, themes, backupPath) {
 
 Themes is an array of objects. Every config file is read, each line run through a RegExp replacer and the replacer functions will usually return a string that includes the correct color for that line from the theme file. So e.g., `*.color0: foo` would be replaced with the value from `theme.color0`.
 
-Support for apps such as neovim comes through adding a property to each theme, where the key equals the name of the app (see "Supported apps") and the value equals the *color scheme within that app*. In other words, the theme shown below ("test") will simply replace whatever color you have set in neovim (in the line `colorscheme yourcurrent-scheme123`) with `colorscheme dracula`. Whether or not you have that theme installed in neovim is up to you.
+Support for apps such as neovim comes through adding a property to each theme, where the key equals the name of the app (see "Supported apps") and the value equals the *color scheme within that app*. In other words, the theme shown below ("test") will simply replace whatever color you have set in neovim (in the line `colorscheme yourcurrent-scheme123`) with `colorscheme dracula`. Whether or not you have that theme installed in neovim is up to you. If a user does not define an entry for each app, the `makeTransforms` function for *that specific app* should just throw an error.
 
 ```json
 {
