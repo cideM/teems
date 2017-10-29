@@ -37,15 +37,15 @@ const makeNewConfig = R.curry(
       const { configFile, makeTransforms } = app;
       const configLines = configFile.split("\n");
       const newConfig = transform(configLines, makeTransforms(theme.colors));
-      resolve(R.merge(app, { config: newConfig.join("\n") }));
+      resolve(R.merge(app, { newConfig: newConfig.join("\n") }));
     })
 );
 
 const writeConfig = app => {
-  const { path, config } = app;
+  const { path, newConfig } = app;
 
-  return util.promisify(fs.writeFile)(path, config, "utf8").then(file =>
-    R.merge(app, { configFile: file })
+  return util.promisify(fs.writeFile)(path, newConfig, "utf8").then(() =>
+    R.merge(app, { newConfig })
   );
 };
 
