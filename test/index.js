@@ -82,6 +82,12 @@ test("initialize", t => {
 test("activateTheme", async t => {
   const activateTheme = initialize(apps);
 
+  const error = await t.throws(() =>
+    activateTheme("blub", mockThemes, path.join(__dirname, "backup/"))
+  );
+
+  t.is(error.message, `Couldn't find theme blub`);
+
   await activateTheme("test", mockThemes, path.join(__dirname, "backup/"));
 
   const expectedFiles = await findFiles(

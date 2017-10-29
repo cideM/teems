@@ -70,10 +70,15 @@ function initialize(apps) {
     assert.ok(Array.isArray(themes), "Themes must be an array");
     assert.ok(typeof backupPath === "string", "backupPath must be a string");
     assert.ok(typeof selectedTheme === "string", "Expected a string");
+
     const theme = R.find(
       R.compose(R.equals(selectedTheme), getThemeName),
       themes
     );
+
+    if (!theme) {
+      throw new Error(`Couldn't find theme ${selectedTheme}`);
+    }
 
     // compose promises together to form a single promise
     const run = R.composeP(
