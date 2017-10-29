@@ -5,6 +5,7 @@ const xdgBase = require("xdg-basedir");
 const { makeTransforms: makeAlacrittyTransforms } = require("./alacritty");
 const { makeTransforms: makeXTransforms } = require("./Xresources");
 const { makeTransforms: makeTermiteTransforms } = require("./termite");
+const { makeTransforms: makeNvimTransforms } = require("./nvim");
 
 const home = os.homedir();
 
@@ -33,5 +34,14 @@ module.exports = [
       path.join(home, ".config/termite/config")
     ],
     makeTransforms: makeTermiteTransforms
+  },
+  {
+    name: "nvim",
+    paths: [
+      path.join(xdgBase.config, "nvim/init.vim"),
+      path.join(xdgBase.data, "nvim/init.vim"),
+      path.join(home, ".config/nvim/init.vim")
+    ],
+    makeTransforms: makeNvimTransforms
   }
 ];

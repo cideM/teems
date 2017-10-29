@@ -36,20 +36,20 @@ test("readFileQuiet", async t => {
     result,
     {
       path: "foo",
-      data: ""
+      configFile: ""
     },
     "Should return path and empty string for invalid path"
   );
 });
 
 test("addConfigAndPathToAppObject", async t => {
-  const configFile = await addConfigAndPathToAppObject(testApp);
+  const result = await addConfigAndPathToAppObject(testApp);
   t.is(
-    configFile.data,
+    result.configFile,
     fs.readFileSync(validPath, { encoding: "utf8" }),
     "Should include file content"
   );
-  t.is(configFile.name, "alacritty", "Should include app name");
+  t.is(result.name, "alacritty", "Should include app name");
 
   const error = await t.throws(
     addConfigAndPathToAppObject({ paths: ["foo"], name: "bar" })
