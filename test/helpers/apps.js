@@ -3,6 +3,7 @@ import path from "path";
 import { makeTransforms as alacrittyMakeTransforms } from "../../source/apps/alacritty";
 import { makeTransforms as XMakeTransforms } from "../../source/apps/Xresources";
 import { makeTransforms as termiteMakeTransforms } from "../../source/apps/termite";
+import { makeTransforms as nvimMakeTransforms } from "../../source/apps/nvim";
 
 const configs = [
   {
@@ -28,6 +29,14 @@ const configs = [
       path.join(__dirname, "foo/foo.yml")
     ],
     makeTransforms: termiteMakeTransforms
+  },
+  {
+    name: "nvim",
+    paths: [
+      path.join(__dirname, "../config/tested/nvim/init.vim"),
+      path.join(__dirname, "foo/foo.yml")
+    ],
+    makeTransforms: nvimMakeTransforms
   }
 ];
 

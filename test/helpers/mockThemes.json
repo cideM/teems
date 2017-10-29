@@ -19,7 +19,8 @@
       "color12": "#FFFF12",
       "color13": "#FFFF13",
       "color14": "#FFFF14",
-      "color15": "#FFFF15"
+      "color15": "#FFFF15",
+      "nvim": "foo"
     }
   }
 ]

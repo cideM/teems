@@ -14,7 +14,4 @@ export const restoreFiles = () =>
     options
   );
 
-export const clearBackups = () =>
-  del([path.join(__dirname, "..", "backup")]).then(paths => {
-    console.log("Deleted files and folders:\n", paths.join("\n"));
-  });
+export const clearBackups = () => del([path.join(__dirname, "..", "backup")]);

@@ -12,7 +12,7 @@ const readFileQuiet = path =>
     fs.readFile(path, { encoding: "utf8" }, (err, data = "") => {
       if (okOrNotFound(err)) {
         // fail silently if the file is not found
-        resolve({ path, data });
+        resolve({ path, configFile: data });
       } else {
         reject(err);
       }
@@ -20,12 +20,12 @@ const readFileQuiet = path =>
   });
 
 const tryAllPaths = R.compose(R.map(readFileQuiet), R.prop("paths"));
-const objectWithData = R.compose(Boolean, R.prop("data"));
+const objectWithConfig = R.compose(Boolean, R.prop("configFile"));
 
 const addConfigAndPathToAppObject = app =>
   Promise.all(tryAllPaths(app))
     .then(
-      R.either(R.find(objectWithData), () => {
+      R.either(R.find(objectWithConfig), () => {
         throw new Error(`No config file found for ${app.name}`);
       })
     )
@@ -34,11 +34,9 @@ const addConfigAndPathToAppObject = app =>
 const makeNewConfig = R.curry(
   (theme, app) =>
     new Promise(resolve => {
-      const { data, makeTransforms } = app;
-      const newConfig = transform(
-        data.split("\n"),
-        makeTransforms(theme.colors)
-      );
+      const { configFile, makeTransforms } = app;
+      const configLines = configFile.split("\n");
+      const newConfig = transform(configLines, makeTransforms(theme.colors));
       resolve(R.merge(app, { config: newConfig.join("\n") }));
     })
 );
@@ -47,7 +45,7 @@ const writeConfig = app => {
   const { path, config } = app;
 
   return util.promisify(fs.writeFile)(path, config, "utf8").then(file =>
-    R.merge(app, { data: file })
+    R.merge(app, { configFile: file })
   );
 };
 
@@ -89,18 +87,7 @@ function initialize(apps) {
 
     R.forEach(backupApp(backupPath), apps);
 
-    return R.map(
-      app =>
-        run(app)
-          .then(app2 => {
-            console.log(
-              `\u{2698} Changed config for ${app2.name} at ${app2.path}`
-            );
-            return app2;
-          })
-          .catch(console.log),
-      apps
-    );
+    return R.map(run, apps);
   };
 }
 
