@@ -10,10 +10,29 @@
 I have spent obscene amounts of time trying out different color themes for terminals and/or terminal neovim. To this day I haven't really found any program that let's me switch colorschemes on the fly, without having to maintain different configuration files. If I want to change keyboard shortcuts in alacritty I want to do so in one file, without having to propagate those changes to all my other config files (containing different colors) through Git cherrypicking for example.
 This library is like the third attempt and it seems the most promising so far. 
 
-## CLI user instructions
+## CLI
 Please see the README for [teems-cli](https://github.com/cideM/teems-cli)
+### Getting started
 
-## How it works
+```shell
+npm install --global teems
+cd ~/.config/teems
+vim themes.json           # Modifiy/add themes
+teems-cli [name of theme] # Activate theme
+```
+
+```shell
+teems-cli --help
+```
+
+It looks for configuration files for each supported app. It reads each file and replaces color values with values from the theme you are activating. Before each operation, it performs a backup of all affected files.
+
+An example theme file can be found in the install directory of teems, usually `$HOME/.config/teems`. Simply add more themes to the array and make sure that foreground, background and colors 0-15 are provided.
+
+You can also add an entry `"nvim": "dracula"` (replace dracula with the neovim colorscheme you would like to activate). When you activate a theme with such an entry, `teems-cli` will look for your neovim configuration, find the line `colorscheme [...]` (stopping at comments) and then simply replace the colorscheme name with the name you set in `themes.json` (here `dracula`).
+
+## Library
+
 There are two important buildings blocks: an array of apps, containing the paths at which config files can be found, and a `makeTransforms` function. When called with a `colors` object, it will return an array of tuples. Each tuple consists of a RegExp selector and the replacer function.
 The library iterates over (through? under?) each app, uses the first config file it finds and then it runs *each line of the file* through *each transform, generated from `makeTransform(theme.colors)`*.
 At the very end, it then replaces the current config file with the modified one. In other words: I tried to keep as many functions as possible pure.
@@ -59,7 +78,8 @@ Support for apps such as neovim comes through adding a property to each theme, w
 ```
 
 Apps look like this:
-```
+
+```javascript
 module.exports = [
   {
     name: "alacritty",
@@ -88,15 +108,9 @@ module.exports = [
   }
 ];
 ```
-
-## Install
-
-```shell
-npm install --save teems
-```
+## API
 
 TODO
-
 ## Contribute
 
 PRs accepted. Check out the [issues](https://github.com/cideM/teems/issues)!
