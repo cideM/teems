@@ -3,71 +3,30 @@ const fs = require("fs");
 const path = require("path");
 const transform = require("./transformer");
 const R = require("ramda");
-const util = require("util");
 const cpr = require("cpr");
 
-const okOrNotFound = error => !error || (error && error.code === "ENOENT");
-
-const readFileQuiet = filePath =>
-  new Promise((resolve, reject) => {
-    fs.readFile(filePath, { encoding: "utf8" }, (err, data = "") => {
-      if (okOrNotFound(err)) {
-        // fail silently if the file is not found
-        resolve({ filePath, configFile: data });
-      } else {
-        reject(err);
-      }
-    });
-  });
-
-const tryAllPaths = R.compose(R.map(readFileQuiet), R.prop("paths"));
-const objectWithConfig = R.compose(Boolean, R.prop("configFile"));
-
-const addConfigAndPathToAppObject = app =>
-  Promise.all(tryAllPaths(app))
-    .then(
-      R.either(R.find(objectWithConfig), () => {
-        throw new Error(`No config file found for ${app.name}`);
-      })
-    )
-    .then(R.merge(app));
-
-const makeNewConfig = R.curry(
-  (theme, app) =>
-    new Promise(resolve => {
-      const { configFile, makeTransforms } = app;
-      const configLines = configFile.split("\n");
-      const newConfig = transform(configLines, makeTransforms(theme.mods));
-      resolve(R.merge(app, { newConfig: newConfig.join("\n") }));
-    })
-);
-
-const writeConfig = app => {
-  const { filePath, newConfig } = app;
-
-  return util.promisify(fs.writeFile)(filePath, newConfig, "utf8").then(() =>
-    R.merge(app, { newConfig })
-  );
+const makeNewConfig = (theme, makeTransforms, oldConfig) => {
+  const configLines = oldConfig.split("\n");
+  return transform(configLines, makeTransforms(theme.mods)).join("\n");
 };
 
-const getThemeName = R.prop("name");
-
-function backupApp(backupPath, app, i) {
-  const { paths } = app;
-
-  paths.forEach(filePath => {
+function backup(backupPath, filePath, identifier) {
+  return new Promise((resolve, reject) => {
     const fileName = R.last(filePath.split("/"));
 
-    try {
-      cpr(filePath, path.join(backupPath, `${fileName}.${i}`), {
-        overwrite: true,
-        confirm: true
-      });
-    } catch (err) {
-      if (err && err.code !== "ENOENT" && err.code !== "EEXIST") {
-        console.log(err);
+    cpr(
+      filePath,
+      path.join(backupPath, `${fileName}.${identifier}`),
+      {
+        overwrite: true
+      },
+      (err, files) => {
+        if (err && err.code !== "ENOENT" && err.code !== "EEXIST") {
+          reject(err);
+        }
+        resolve(files);
       }
-    }
+    );
   });
 }
 
@@ -79,30 +38,48 @@ function initialize(apps) {
     assert.ok(typeof backupPath === "string", "backupPath must be a string");
     assert.ok(typeof selectedTheme === "string", "Expected a string");
 
-    const theme = R.find(
-      R.compose(R.equals(selectedTheme), getThemeName),
-      themes
-    );
+    const theme = themes.find(theme1 => theme1.name === selectedTheme);
 
     if (!theme) {
       throw new Error(`Couldn't find theme ${selectedTheme}`);
     }
 
-    // compose promises together to form a single promise
-    const run = R.composeP(
-      writeConfig,
-      makeNewConfig(theme),
-      addConfigAndPathToAppObject
+    return apps.map(
+      (app, i) =>
+        new Promise(async (resolve, reject) => {
+          const validPaths = app.paths.filter(filePath =>
+            fs.existsSync(filePath)
+          );
+
+          if (!validPaths.length) {
+            reject(new Error(`No config file found for ${app}`));
+          }
+
+          await Promise.all(
+            validPaths.map((filePath, ii) =>
+              backup(backupPath, filePath, `${i}.${ii}`)
+            )
+          );
+
+          const newConfigsAndPaths = validPaths
+            .map(filePath => [fs.readFileSync(filePath, "utf8"), filePath])
+            .map(([config, filePath]) => [
+              makeNewConfig(theme, app.makeTransforms, config),
+              filePath
+            ]);
+
+          newConfigsAndPaths.forEach(([newConfig, filePath]) =>
+            fs.writeFileSync(filePath, newConfig, "utf8")
+          );
+
+          const onlyPaths = newConfigsAndPaths.map(tuple => tuple[0]);
+
+          resolve(Object.assign({}, app, { paths: onlyPaths }));
+        })
     );
-
-    apps.forEach((app, i) => backupApp(backupPath, app, i));
-
-    return R.map(run, apps);
   };
 }
 
 module.exports = {
-  initialize,
-  addConfigAndPathToAppObject,
-  readFileQuiet
+  initialize
 };
