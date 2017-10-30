@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 const meow = require("meow");
+const fs = require("fs");
+const path = require("path");
 const activate = require("../lib/activateTheme");
-const { getThemes, getConfig } = require("./index");
+const { configFilePath } = require("../../config/index");
 
 const cli = meow(
   `
@@ -27,20 +29,22 @@ const cli = meow(
   }
 );
 
+const config = JSON.parse(fs.readFileSync(configFilePath));
+const themes = JSON.parse(
+  fs.readFileSync(path.join(config.appDir, "themes.json"))
+);
+
 if (Object.keys(cli.flags).length > 0) {
   if (cli.flags.list) {
-    const themes = getThemes();
     themes.forEach(theme => {
       console.log(theme.name);
     });
   }
 
   if (cli.flags.dump) {
-    console.log(getConfig());
+    console.log(config);
   }
 } else if (cli.input.length > 0) {
-  const config = getConfig();
-  const themes = getThemes();
   activate(cli.input[0], themes, config.backupDir).forEach(p => {
     p
       .then(result => console.log(`Modified config file for ${result.name}`))

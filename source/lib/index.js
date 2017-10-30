@@ -4,8 +4,7 @@ const path = require("path");
 const transform = require("./transformer");
 const R = require("ramda");
 const util = require("util");
-
-const { COPYFILE_EXCL } = fs.constants;
+const cpr = require("cpr");
 
 const okOrNotFound = error => !error || (error && error.code === "ENOENT");
 
@@ -60,13 +59,12 @@ function backupApp(backupPath, app, i) {
     const fileName = R.last(filePath.split("/"));
 
     try {
-      fs.copyFileSync(
-        filePath,
-        path.join(backupPath, `${fileName}.${i}`),
-        COPYFILE_EXCL
-      );
+      cpr(filePath, path.join(backupPath, `${fileName}.${i}`), {
+        overwrite: true,
+        confirm: true
+      });
     } catch (err) {
-      if (err && err.code !== "ENOENT") {
+      if (err && err.code !== "ENOENT" && err.code !== "EEXIST") {
         console.log(err);
       }
     }

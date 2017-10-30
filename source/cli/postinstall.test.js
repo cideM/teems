@@ -1,19 +1,11 @@
-import * as path from "path";
-import * as fs from "fs";
 import test from "ava";
-import * as del from "del";
-import { postInstall, getConfig, getThemes } from "../../source/cli/index";
+import * as fs from "fs";
+import * as path from "path";
+import postInstall from "./postinstall";
+import { testPath } from "../../config/index";
 
-const testXdgHome = path.join(__dirname, "xdghome");
-const testOwnConfig = path.join(__dirname, "..", "..", "testconfig.json");
-
-test.before(() => {
-  try {
-    del.sync([path.join(testXdgHome, "*"), testOwnConfig]);
-  } catch (err) {
-    console.log(err);
-  }
-});
+const testXdgHome = path.join(testPath, "xdghome");
+const testOwnConfig = path.join(testPath, "testconfig.json");
 
 test("postInstall", t => {
   postInstall(testXdgHome, "teems", testOwnConfig);
@@ -35,15 +27,11 @@ test("postInstall", t => {
   );
 
   t.deepEqual(
-    getConfig(testOwnConfig),
+    JSON.parse(fs.readFileSync(testOwnConfig)),
     {
       appDir: path.join(testXdgHome, "teems"),
       backupDir: path.join(testXdgHome, "teems/backup")
     },
     "Store backup and config path in config file"
   );
-});
-
-test("getThemes", t => {
-  t.notThrows(() => getThemes(testOwnConfig));
 });

@@ -6,7 +6,7 @@ function makeSelectorWord() {
 function makeTransforms(colors) {
   if (!colors.nvim) {
     throw new Error(
-      `No 'nvim' property found in the selected theme. Skipping...`
+      `No 'nvim' property found in the selected theme. You can ignore this error, it's okay!`
     );
   }
 
