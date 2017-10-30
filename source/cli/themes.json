@@ -19,7 +19,8 @@
       "color6":     "#8BE9FD",
       "color14":    "#9AEDFE",
       "color7":     "#BFBFBF",
-      "color15":    "#E6E6E6"
+      "color15":    "#E6E6E6",
+      "nvim": "dracula"
     }
   },
   {
@@ -42,7 +43,8 @@
       "color14":    "#8ec07c",
       "color6":     "#a89984",
       "color7":     "#a89984",
-      "color15":    "#ebdbb2"
+      "color15":    "#ebdbb2",
+      "nvim": "gruvbox"
     }
   }
 ]
