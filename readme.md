@@ -8,10 +8,12 @@
 ## Why
 
 I have spent obscene amounts of time trying out different color themes for terminals and/or terminal neovim. To this day I haven't really found any program that let's me switch colorschemes on the fly, without having to maintain different configuration files. If I want to change keyboard shortcuts in alacritty I want to do so in one file, without having to propagate those changes to all my other config files (containing different colors) through Git cherrypicking for example.
-This library is like the third attempt and it seems the most promising so far. 
+This library is like the third attempt and it seems the most promising so far.
 
 ## CLI
+
 Please see the README for [teems-cli](https://github.com/cideM/teems-cli)
+
 ### Getting started
 
 ```shell
@@ -108,9 +110,11 @@ module.exports = [
   }
 ];
 ```
+
 ## API
 
 TODO
+
 ## Contribute
 
 PRs accepted. Check out the [issues](https://github.com/cideM/teems/issues)!
