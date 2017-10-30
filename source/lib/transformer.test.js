@@ -1,7 +1,7 @@
 import test from "ava";
 import transform from "./transformer";
 
-const mockThemes = [
+const themes = [
   {
     name: "test",
     colors: {
@@ -32,13 +32,11 @@ color0: colors!0
 `;
 
 test("transform", t => {
-  t.notThrows(() =>
-    transform(["test"], mockAppTransforms(mockThemes[0].colors))
-  );
+  t.notThrows(() => transform(["test"], mockAppTransforms(themes[0].colors)));
 
   const result = transform(
     mockFile.split("\n"),
-    mockAppTransforms(mockThemes[0].colors)
+    mockAppTransforms(themes[0].colors)
   );
   t.deepEqual(result.join("\n"), expected, "Should transform colors");
 });

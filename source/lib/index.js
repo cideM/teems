@@ -37,7 +37,7 @@ const makeNewConfig = R.curry(
     new Promise(resolve => {
       const { configFile, makeTransforms } = app;
       const configLines = configFile.split("\n");
-      const newConfig = transform(configLines, makeTransforms(theme.colors));
+      const newConfig = transform(configLines, makeTransforms(theme.mods));
       resolve(R.merge(app, { newConfig: newConfig.join("\n") }));
     })
 );

@@ -12,7 +12,7 @@ const colorTransforms = colors =>
     16
   );
 
-const makeTransforms = colors => [
+const makeTransforms = ({ colors }) => [
   [makeSelectorWord("foreground"), () => `foreground = ${colors.foreground}`],
   [
     makeSelectorWord("foreground_bold"),

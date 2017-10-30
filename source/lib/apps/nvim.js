@@ -3,14 +3,14 @@ function makeSelectorWord() {
   return new RegExp(`^(colo\\b|colorscheme\\b)\\s*[\\w-]*`);
 }
 
-function makeTransforms(colors) {
-  if (!colors.nvim) {
+function makeTransforms({ misc }) {
+  if (!misc || !misc.nvim) {
     throw new Error(
       `No 'nvim' property found in the selected theme. You can ignore this error, it's okay!`
     );
   }
 
-  return [[makeSelectorWord(), () => `colorscheme ${colors.nvim}`]];
+  return [[makeSelectorWord(), () => `colorscheme ${misc.nvim}`]];
 }
 
 module.exports = {

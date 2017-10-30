@@ -194,4 +194,4 @@ set background=dark
 let g:seoul256_srgb = 1
 let g:seoul256_background = 236
 let g:nofrils_strbackgrounds=1
-colorscheme foo
+colorscheme dracula

@@ -37,39 +37,39 @@ filter_unmatched_urls = true
 [colors]
 
 # special
-foreground = #FFFFFF
-foreground_bold = #FFFFFF
+foreground = #F8F8F2
+foreground_bold = #F8F8F2
 cursor = 
-background = #000000
+background = #282A36
 
 # black
-color0 = #FFFF00
-color8 = #FFFF08
+color0 = #000000
+color8 = #4D4D4D
 
 # red
-color1 = #FFFF01
-color9 = #FFFF09
+color1 = #FF5555
+color9 = #FF6E67
 
 # green
-color2 = #FFFF02
-color10 = #FFFF10
+color2 = #50FA7B
+color10 = #5AF78E
 
 # yellow
-color3 = #FFFF03
-color11 = #FFFF11
+color3 = #F1FA8C
+color11 = #F4F99D
 
 # blue
-color4 = #FFFF04
-color12 = #FFFF12
+color4 = #BD93F9
+color12 = #CAA9FA
 
 # magenta
-color5 = #FFFF05
-color13 = #FFFF13
+color5 = #FF79C6
+color13 = #FF92D0
 
 # cyan
-color6 = #FFFF06
-color14 = #FFFF14
+color6 = #8BE9FD
+color14 = #9AEDFE
 
 # white
-color7 = #FFFF07
-color15 = #FFFF15
+color7 = #BFBFBF
+color15 = #E6E6E6

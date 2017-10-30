@@ -7,7 +7,7 @@ const makeTransform = (selector, newColor) => [
   (match, p1, p2) => `${p1}:${p2}'${transformColor(newColor)}'`
 ];
 
-const makeTransforms = colors => [
+const makeTransforms = ({ colors }) => [
   makeTransform("foreground", colors.foreground),
   makeTransform("background", colors.background),
   makeTransform("text", colors.foreground),

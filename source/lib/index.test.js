@@ -5,7 +5,7 @@ import * as find from "find";
 import cp from "recursive-copy";
 import del from "del";
 import { AssertionError } from "assert";
-import mockThemes from "../../test/mockThemes.json";
+import themes from "../../source/cli/themes.json";
 import { configs as apps } from "../../test/apps";
 import {
   addConfigAndPathToAppObject,
@@ -73,11 +73,11 @@ test("activateTheme", async t => {
   const activateTheme = initialize(apps);
 
   const error = await t.throws(() =>
-    activateTheme("blub", mockThemes, backupDirPath)
+    activateTheme("blub", themes, backupDirPath)
   );
   t.is(error.message, `Couldn't find theme blub`);
 
-  await Promise.all(activateTheme("test", mockThemes, backupDirPath));
+  await Promise.all(activateTheme("dracula", themes, backupDirPath));
 
   const expectedFiles = find.fileSync(path.join(testDotfileDir, "expected"));
   const resultsFiles = find.fileSync(path.join(testDotfileDir, "tested"));
