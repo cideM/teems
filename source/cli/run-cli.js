@@ -4,7 +4,7 @@ const meow = require("meow");
 const fs = require("fs");
 const path = require("path");
 const run = require("../lib/index");
-const apps = require("../lib/apps/index");
+const { apps, special } = require("../lib/apps/index");
 const { configFilePath } = require("../../config/index");
 
 const cli = meow(
@@ -43,13 +43,18 @@ if (Object.keys(cli.flags).length > 0) {
   }
 
   if (cli.flags.dump) {
+    console.log("Stored paths to your teems folder");
     console.log(config);
+    console.log(" ");
+    console.log(`Apps that support the "misc" property`);
+    special.forEach(app => console.log(app.name));
+    console.log(" ");
+    console.log("All supported apps");
+    apps.forEach(app => console.log(app.name));
   }
 } else if (cli.input.length > 0) {
   run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
-    p
-      .then(result => console.log(`Modified config file for ${result[0]}`))
-      .catch(console.error);
+    p.then(result => console.log(`\u2713 ${result[0]}`)).catch(console.error);
   });
 } else {
   cli.showHelp();

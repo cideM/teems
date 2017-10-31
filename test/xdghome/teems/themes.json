@@ -23,7 +23,8 @@
         "color15": "#E6E6E6"
       },
       "misc": {
-        "nvim": "dracula"
+        "nvim": "dracula",
+        "vsc": "dracula"
       }
     }
   },

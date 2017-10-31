@@ -6,7 +6,7 @@ import cp from "recursive-copy";
 import del from "del";
 import { AssertionError } from "assert";
 import themes from "../../source/cli/themes.json";
-import { configs as apps } from "../../test/apps";
+import { apps } from "../../test/apps";
 import run from "./index";
 
 const utf = { encoding: "utf8" };
