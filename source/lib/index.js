@@ -70,6 +70,4 @@ function run(apps, themes, selectedTheme, backupPath) {
   );
 }
 
-module.exports = {
-  run
-};
+module.exports = run;
