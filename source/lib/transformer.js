@@ -11,9 +11,13 @@ const transform = (lines, transforms, result = []) => {
     const [regexp, replacer] = matchingTransformation;
     const transformedLine = currentLine.replace(regexp, replacer);
 
+    const matchingIndex = transforms.findIndex(
+      x => x === matchingTransformation
+    );
+
     return transform(
       lines.slice(1),
-      transforms.filter(x => x !== matchingTransformation),
+      transforms.filter((_, i) => i !== matchingIndex),
       result.length ? result.concat([transformedLine]) : [transformedLine]
     );
   }

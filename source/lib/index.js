@@ -65,6 +65,7 @@ function run(apps, themes, selectedTheme, backupPath) {
           )
         );
 
+        console.log(app.name);
         const newConfigsAndPaths = validPaths.map(filePath => {
           const oldConfig = fs.readFileSync(filePath, "utf8");
           const newConfig = makeNewConfig(theme, app.makeTransforms, oldConfig);
