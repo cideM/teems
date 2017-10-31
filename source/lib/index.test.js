@@ -7,7 +7,7 @@ import del from "del";
 import { AssertionError } from "assert";
 import themes from "../../source/cli/themes.json";
 import { configs as apps } from "../../test/apps";
-import { run } from "./index";
+import run from "./index";
 
 const utf = { encoding: "utf8" };
 const backupDirPath = path.join(__dirname, "../../test/backup");
@@ -36,6 +36,39 @@ test("run", async t => {
 
   const error2 = await t.throws(() => run(apps, themes, "blub", backupDirPath));
   t.is(error2.message, `Couldn't find theme blub`);
+
+  const error3 = await t.throws(
+    () =>
+      run(
+        apps,
+        [
+          {
+            name: "test"
+          }
+        ],
+        "test",
+        backupDirPath
+      ),
+    AssertionError
+  );
+  t.is(error3.message, `Theme test has no property "mods"`);
+
+  const error4 = await t.throws(
+    () =>
+      run(
+        apps,
+        [
+          {
+            name: "test",
+            mods: {}
+          }
+        ],
+        "test",
+        backupDirPath
+      ),
+    AssertionError
+  );
+  t.is(error4.message, `Theme test has no property "colors" in "mods"`);
 
   await Promise.all(run(apps, themes, "dracula", backupDirPath));
 

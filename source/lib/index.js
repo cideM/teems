@@ -18,6 +18,7 @@ function backup(backupPath, filePath, identifier) {
     cpr(
       filePath,
       path.join(backupPath, `${identifier}-${fileName}`),
+      { overwrite: true },
       (err, files) => {
         if (err && err.code !== "ENOENT") {
           reject(err);
@@ -28,9 +29,18 @@ function backup(backupPath, filePath, identifier) {
   });
 }
 
+function checkTheme(theme) {
+  assert.ok(theme.mods, `Theme ${theme.name} has no property "mods"`);
+  assert.ok(
+    theme.mods.colors,
+    `Theme ${theme.name} has no property "colors" in "mods"`
+  );
+}
+
 function run(apps, themes, selectedTheme, backupPath) {
   assert.ok(Array.isArray(apps), "Apps must be an array");
   assert.ok(Array.isArray(themes), "Themes must be an array");
+  themes.forEach(checkTheme);
   assert.ok(typeof backupPath === "string", "backupPath must be a string");
   assert.ok(typeof selectedTheme === "string", "Expected a string");
 
