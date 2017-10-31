@@ -37,34 +37,6 @@ function checkTheme(theme) {
   );
 }
 
-/**
- * @typedef App
- * @prop {string} name
- * @prop {Array<string>} paths
- * @prop {Function} makeTransforms
- */
-
-/**
- * @typedef Mods
- * @prop {Object} colors
- * @prop {Object} [misc]
- */
-
-/**
- * @typedef Theme
- * @prop {string} name
- * @prop {Mods} mods
- */
-
-/**
- * 
- * 
- * @param {Array<App>} apps 
- * @param {Array<Theme>} themes 
- * @param {string} selectedTheme 
- * @param {string} backupPath 
- * @returns Promise<Object>
- */
 function run(apps, themes, selectedTheme, backupPath) {
   assert.ok(Array.isArray(apps), "Apps must be an array");
   assert.ok(Array.isArray(themes), "Themes must be an array");

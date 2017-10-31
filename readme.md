@@ -41,79 +41,43 @@ At the very end, it then replaces the current config file with the modified one.
 
 Every app runs in its own promise chain. There is no `Promise.all`. The advantage is that whatever function needs to abort, can just throw an exception. It will not interfere with any other app. On the other hand, it can mean that 3/4 apps now have a new color scheme, because one threw an exception before `writeConfig`.
 
-I make heavy use of `ramda` which I am planning on getting rid of to keep things simple.
+## API
+It's not actually Typescript but I don't like JSDoc types so here's a TS signature instead.
 
-```javascript
-// initialize :: apps[], themes[], string -> string -> apps[]
-function initialize(apps, themes, backupPath) {
-```
+```typescript
+interface Colors {
+  [color: string]: string
+}
 
-Themes is an array of objects. Every config file is read, each line run through a RegExp replacer and the replacer functions will usually return a string that includes the correct color for that line from the theme file. So e.g., `*.color0: foo` would be replaced with the value from `theme.color0`.
+interface App {
+  name: string;
+  paths: string[];
+  makeTransforms(ColorsType): Array<[RegExp, (color: string) => string]>;
+}
 
-Support for apps such as neovim comes through adding a property to each theme, where the key equals the name of the app (see "Supported apps") and the value equals the *color scheme within that app*. In other words, the theme shown below ("test") will simply replace whatever color you have set in neovim (in the line `colorscheme yourcurrent-scheme123`) with `colorscheme dracula`. Whether or not you have that theme installed in neovim is up to you. If a user does not define an entry for each app, the `makeTransforms` function for *that specific app* should just throw an error.
+interface Theme {
+  name: string;
+  mods: {
+    colors: Colors;
+    misc: {
+      [appName: string]: string
+    }
+  }
+}
 
-```json
-{
- "name": "test",
- "colors": {
-   "foreground": "#FFFFFF",
-   "background": "#000000",
-   "color0": "#FFFF00",
-   "color1": "#FFFF01",
-   "color2": "#FFFF02",
-   "color3": "#FFFF03",
-   "color4": "#FFFF04",
-   "color5": "#FFFF05",
-   "color6": "#FFFF06",
-   "color7": "#FFFF07",
-   "color8": "#FFFF08",
-   "color9": "#FFFF09",
-   "color10": "#FFFF10",
-   "color11": "#FFFF11",
-   "color12": "#FFFF12",
-   "color13": "#FFFF13",
-   "color14": "#FFFF14",
-   "color15": "#FFFF15",
-   "nvim": "dracula"
- }
+interface run {
+  (
+    apps: Array<App>,
+    themes: Array<Theme>,
+    selectedTheme: string,
+    backupPath: string
+  ): Array<Promise<App>>
 }
 ```
 
-Apps look like this:
+Themes is an array of objects (see `themes.json`). Every config file is read, each line run through a RegExp replacer and the replacer functions will usually return a string that includes the correct color for that line from the theme file. So e.g., `*.color0: foo` would be replaced with the value from `theme.mods.colors.color0`.
 
-```javascript
-module.exports = [
-  {
-    name: "alacritty",
-    paths: [
-      path.join(home, ".config/alacritty/alacritty.yml"),
-      path.join(xdgBase.config, "alacritty/alacritty.yml"),
-      path.join(xdgBase.config, "alacritty.yml"),
-      path.join(xdgBase.config, "alacritty/alacritty.yml"),
-      path.join(home, ".alacritty.yml")
-    ],
-    makeTransforms: makeAlacrittyTransforms
-  },
-  {
-    name: "Xresources",
-    paths: [path.join(home, "./.Xresources"), path.join(home, "./.Xdefaults")],
-    makeTransforms: makeXTransforms
-  },
-  {
-    name: "termite",
-    paths: [
-      path.join(xdgBase.config, "termite/config"),
-      path.join(xdgBase.dataDirs, "termite/config"),
-      path.join(home, ".config/termite/config")
-    ],
-    makeTransforms: makeTermiteTransforms
-  }
-];
-```
-
-## API
-
-TODO
+Support for apps such as neovim comes through adding a property to each theme, where the key equals the name of the app (see "Supported apps") and the value equals the *color scheme within that app*. In other words, the theme shown below ("test") will simply replace whatever color you have set in neovim (in the line `colorscheme yourcurrent-scheme123`) with `colorscheme dracula`. Whether or not you have that theme installed in neovim is up to you. If a user does not define an entry for each app, the `makeTransforms` function for *that specific app* should just throw an error. See `/apps/index.js` for examples.
 
 ## Contribute
 
