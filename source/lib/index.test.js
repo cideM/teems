@@ -7,7 +7,7 @@ import del from "del";
 import { AssertionError } from "assert";
 import themes from "../../source/cli/themes.json";
 import { configs as apps } from "../../test/apps";
-import { initialize } from "./index";
+import { run } from "./index";
 
 const utf = { encoding: "utf8" };
 const backupDirPath = path.join(__dirname, "../../test/backup");
@@ -27,24 +27,17 @@ test.before(async () => {
   }
 });
 
-test("initialize", async t => {
-  t.is(initialize.length, 1);
-  t.throws(() => initialize("string", "a"), Error);
-
-  const app = initialize([]);
-  t.is(app.length, 3);
-  await t.throws(() => app([]), AssertionError);
-});
-
-test("activateTheme", async t => {
-  const activateTheme = initialize(apps);
-
-  const error = await t.throws(() =>
-    activateTheme("blub", themes, backupDirPath)
+test("run", async t => {
+  const error = t.throws(
+    () => run("a", themes, "blub", backupDirPath),
+    AssertionError
   );
-  t.is(error.message, `Couldn't find theme blub`);
+  t.is(error.message, `Apps must be an array`);
 
-  await Promise.all(activateTheme("dracula", themes, backupDirPath));
+  const error2 = await t.throws(() => run(apps, themes, "blub", backupDirPath));
+  t.is(error2.message, `Couldn't find theme blub`);
+
+  await Promise.all(run(apps, themes, "dracula", backupDirPath));
 
   const expectedFiles = find.fileSync(path.join(testDotfileDir, "expected"));
   const resultsFiles = find.fileSync(path.join(testDotfileDir, "tested"));

@@ -1,4 +1,3 @@
-const R = require("ramda");
 const path = require("path");
 const {
   makeTransforms: alacrittyMakeTransforms
@@ -48,8 +47,7 @@ const configs = [
   }
 ];
 
-const getConfig = name =>
-  R.find(R.compose(R.equals(name), R.prop("name")), configs);
+const getConfig = name => configs.find(x => x.name === name);
 
 module.exports = {
   getConfig,

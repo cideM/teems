@@ -3,7 +3,8 @@
 const meow = require("meow");
 const fs = require("fs");
 const path = require("path");
-const activate = require("../lib/activateTheme");
+const run = require("../lib/index");
+const apps = require("../lib/apps/index");
 const { configFilePath } = require("../../config/index");
 
 const cli = meow(
@@ -45,9 +46,9 @@ if (Object.keys(cli.flags).length > 0) {
     console.log(config);
   }
 } else if (cli.input.length > 0) {
-  activate(cli.input[0], themes, config.backupDir).forEach(p => {
+  run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
     p
-      .then(result => console.log(`Modified config file for ${result.name}`))
+      .then(result => console.log(`Modified config file for ${result[0]}`))
       .catch(console.error);
   });
 } else {
