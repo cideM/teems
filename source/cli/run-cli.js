@@ -54,7 +54,11 @@ if (Object.keys(cli.flags).length > 0) {
   }
 } else if (cli.input.length > 0) {
   run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
-    p.then(result => console.log(`\u2713 ${result[0]}`)).catch(console.error);
+    p
+      .then(result => console.log(`\u2713 ${result[0]}`))
+      .catch(error =>
+        console.error(`\u26CC ${error.appName}: ${error.message}`)
+      );
   });
 } else {
   cli.showHelp();

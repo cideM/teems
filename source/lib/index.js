@@ -65,17 +65,26 @@ function run(apps, themes, selectedTheme, backupPath) {
           )
         );
 
-        const newConfigsAndPaths = validPaths.map(filePath => {
-          const oldConfig = fs.readFileSync(filePath, "utf8");
-          const newConfig = makeNewConfig(theme, app.makeTransforms, oldConfig);
-          return [newConfig, filePath];
-        });
+        try {
+          const newConfigsAndPaths = validPaths.map(filePath => {
+            const oldConfig = fs.readFileSync(filePath, "utf8");
+            const newConfig = makeNewConfig(
+              theme,
+              app.makeTransforms,
+              oldConfig
+            );
+            return [newConfig, filePath];
+          });
 
-        newConfigsAndPaths.forEach(([newConfig, filePath]) =>
-          fs.writeFileSync(filePath, newConfig, "utf8")
-        );
+          newConfigsAndPaths.forEach(([newConfig, filePath]) =>
+            fs.writeFileSync(filePath, newConfig, "utf8")
+          );
 
-        resolve([app.name, validPaths]);
+          resolve([app.name, validPaths]);
+        } catch (error) {
+          error.appName = app.name;
+          reject(error);
+        }
       })
   );
 }
