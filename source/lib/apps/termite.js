@@ -1,3 +1,5 @@
+"use-strict";
+
 const makeSelectorWord = word => new RegExp(`${word}\\s*=\\s*.*`);
 const makeSelectorColor = () => /color(\d+).*=\s*#[a-zA-Z0-9]*/;
 

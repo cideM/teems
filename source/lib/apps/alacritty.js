@@ -1,3 +1,5 @@
+"use-strict";
+
 const makeSelector = word => new RegExp(`(${word}):(\\s*)'[a-zA-Z0-9]*'`);
 
 const transformColor = color => color.replace(/#/, "0x");

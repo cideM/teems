@@ -1,3 +1,5 @@
+"use-strict";
+
 const assert = require("assert");
 const fs = require("fs");
 const path = require("path");
@@ -29,12 +31,47 @@ function backup(backupPath, filePath, identifier) {
   });
 }
 
+const mandatory = [
+  "foreground",
+  "background",
+  "color0",
+  "color1",
+  "color2",
+  "color3",
+  "color4",
+  "color5",
+  "color6",
+  "color7",
+  "color8",
+  "color9",
+  "color10",
+  "color11",
+  "color12",
+  "color13",
+  "color14",
+  "color15"
+];
+
+const reg = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/;
+
 function checkTheme(theme) {
   assert.ok(theme.mods, `Theme ${theme.name} has no property "mods"`);
   assert.ok(
     theme.mods.colors,
     `Theme ${theme.name} has no property "colors" in "mods"`
   );
+  const { colors } = theme.mods;
+  mandatory.forEach(x => {
+    if (Object.keys(colors).indexOf(x) === -1) {
+      throw new Error(`Color ${x} is missing in theme ${theme.name}`);
+    } else if (!reg.test(colors[x])) {
+      throw new Error(
+        `Color ${colors[
+          x
+        ]} is not a valid color, in theme ${theme.name}. Accepted values are #XXX and #XXXXXX`
+      );
+    }
+  });
 }
 
 function run(apps, themes, selectedTheme, backupPath) {

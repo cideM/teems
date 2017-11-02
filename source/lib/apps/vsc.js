@@ -1,3 +1,5 @@
+"use-strict";
+
 function makeSelectorWord() {
   // Should mach e.g., dark-elf256
   return /"workbench\.colorTheme":\s*".*"/;

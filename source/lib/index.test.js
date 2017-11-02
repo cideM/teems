@@ -37,6 +37,68 @@ test("run", async t => {
   const error2 = await t.throws(() => run(apps, themes, "blub", backupDirPath));
   t.is(error2.message, `Couldn't find theme blub`);
 
+  await t.throws(() =>
+    run(
+      apps,
+      [
+        {
+          name: "foo",
+          mods: {
+            colors: {
+              color4: "#FFFFFF"
+            }
+          }
+        }
+      ],
+      "blub",
+      backupDirPath
+    )
+  );
+
+  const error5 = await t.throws(() =>
+    run(
+      apps,
+      [
+        {
+          name: "foo",
+          mods: {
+            colors: {
+              foreground: "FFFFFF"
+            }
+          }
+        }
+      ],
+      "blub",
+      backupDirPath
+    )
+  );
+  t.is(
+    error5.message,
+    `Color FFFFFF is not a valid color, in theme foo. Accepted values are #XXX and #XXXXXX`
+  );
+
+  const error6 = await t.throws(() =>
+    run(
+      apps,
+      [
+        {
+          name: "foo",
+          mods: {
+            colors: {
+              foreground: "#FFFF"
+            }
+          }
+        }
+      ],
+      "blub",
+      backupDirPath
+    )
+  );
+  t.is(
+    error6.message,
+    `Color #FFFF is not a valid color, in theme foo. Accepted values are #XXX and #XXXXXX`
+  );
+
   const error3 = await t.throws(
     () =>
       run(
