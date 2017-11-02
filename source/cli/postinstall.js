@@ -33,7 +33,7 @@ function postInstall(
     fs.copyFileSync(
       path.join(__dirname, "themes.json"),
       path.join(appDir, "themes.json"),
-      COPYFILE_EXCL
+      COPYFILE_EXCL // dont overwrite
     );
     console.log(`Copied example themes.json to ${appDir}`);
   } catch (err) {
