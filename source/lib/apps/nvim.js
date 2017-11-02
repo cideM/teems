@@ -5,9 +5,7 @@ function makeSelectorWord() {
 
 function makeTransforms({ misc }) {
   if (!misc || !misc.nvim) {
-    throw new Error(
-      `No 'nvim' property found in the selected theme. You can ignore this error, it's okay!`
-    );
+    console.warn(`No 'nvim' property found in the selected theme.`);
   }
 
   return [[makeSelectorWord(), () => `colorscheme ${misc.nvim}`]];
