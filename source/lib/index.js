@@ -93,7 +93,9 @@ function run(apps, themes, selectedTheme, backupPath) {
         const validPaths = app.paths.filter(fs.existsSync);
 
         if (!validPaths.length) {
-          reject(new Error(`No config file found for ${app}`));
+          const error = new Error(`No config file found for ${app.name}`);
+          error.appName = app.name;
+          reject(error);
         }
 
         await Promise.all(
@@ -116,7 +118,6 @@ function run(apps, themes, selectedTheme, backupPath) {
           newConfigsAndPaths.forEach(([newConfig, filePath]) =>
             fs.writeFileSync(filePath, newConfig, "utf8")
           );
-
           resolve([app.name, validPaths]);
         } catch (error) {
           error.appName = app.name;

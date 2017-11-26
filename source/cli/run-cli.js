@@ -58,8 +58,10 @@ if (Object.keys(cli.flags).length > 0) {
   run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
     p
       .then(result => console.log(`\u2713 ${result[0]}`))
-      .catch(error =>
+      .catch(error => {
+        // console.log(error.appName)
         console.error(`\u26CC ${error.appName}: ${error.message}`)
+      }
       );
   });
 } else {
