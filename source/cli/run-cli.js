@@ -7,7 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const run = require('../lib/index')
 const { apps, special } = require('../lib/apps/index')
-const { configFilePath } = require('../../config/index')
+const config = require('../../config/index')
 
 const cli = meow(
     `
@@ -20,7 +20,7 @@ const cli = meow(
   Options
   	-l, --list List all available themes
 		-d, --dump Dump teems configuration variables
-	
+
 	 Help
 		Hit me up on twitter @AyanamiVey or write an issue on https://github.com/cideM/teems-cli
 `,
@@ -32,7 +32,6 @@ const cli = meow(
     }
 )
 
-const config = JSON.parse(fs.readFileSync(configFilePath))
 const themes = JSON.parse(fs.readFileSync(path.join(config.appDir, 'themes.json')))
 
 if (Object.keys(cli.flags).length > 0) {
