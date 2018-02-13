@@ -2,7 +2,7 @@ import test from 'ava'
 import path from 'path'
 import { AssertionError } from 'assert'
 import themes from '../../source/cli/themes.json'
-import { apps } from '../../test/apps'
+import { apps } from './apps/index'
 import run from './index'
 
 const backupDirPath = path.join(__dirname, '../../test/backup')
