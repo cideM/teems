@@ -6,13 +6,9 @@ function makeSelectorWord() {
 }
 
 function makeTransforms({ misc }) {
-    if (!misc || !misc.vsc) {
-        throw new Error(
-            `No 'vsc' property found in the selected theme. You can ignore this error, it's okay!`
-        )
-    }
-
-    return [[makeSelectorWord(), () => `"workbench.colorTheme": "${misc.vsc}"`]]
+    if (misc && misc.vsc) {
+        return [[makeSelectorWord(), () => `"workbench.colorTheme": "${misc.vsc}"`]]
+    } else return [[null, null]]
 }
 
 module.exports = makeTransforms

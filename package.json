@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "eslint --fix --ext .js ./",
-    "test": "npm run lint && nyc ava",
+    "test": "npm run lint && ava",
     "format": "prettier \"{source,test}/**/*.js\" --config prettierrc.yaml --write",
     "postinstall": "node source/cli/run-post-install.js"
   },
