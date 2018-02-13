@@ -15,7 +15,4 @@ function makeTransforms({ misc }) {
     return [[makeSelectorWord(), () => `"workbench.colorTheme": "${misc.vsc}"`]]
 }
 
-module.exports = {
-    makeSelectorWord,
-    makeTransforms,
-}
+module.exports = makeTransforms

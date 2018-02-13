@@ -2,14 +2,16 @@ const path = require('path')
 const os = require('os')
 const xdgBase = require('xdg-basedir')
 
-const { makeTransforms: alacritty } = require('./alacritty')
-const { makeTransforms: X } = require('./Xresources')
-const { makeTransforms: termite } = require('./termite')
-const { makeTransforms: nvim } = require('./nvim')
-const { makeTransforms: vsc } = require('./vsc')
+const alacritty = require('./alacritty')
+const X = require('./Xresources')
+const termite = require('./termite')
+const nvim = require('./nvim')
+const vsc = require('./vsc')
 
 const home = os.homedir()
 
+// These apps support replacing something other than color values
+// For example, in neovim the "colo(rshceme" value can be changed
 const special = [
     {
         name: 'nvim',

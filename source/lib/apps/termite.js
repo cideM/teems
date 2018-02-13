@@ -14,8 +14,4 @@ const makeTransforms = ({ colors }) => [
     ...colorTransforms(colors),
 ]
 
-module.exports = {
-    makeTransforms,
-    makeSelectorColor,
-    makeSelectorWord,
-}
+module.exports = makeTransforms

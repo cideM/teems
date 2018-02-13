@@ -15,7 +15,4 @@ function makeTransforms({ misc }) {
     return [[makeSelectorWord(), () => `colorscheme ${misc.nvim}`]]
 }
 
-module.exports = {
-    makeSelectorWord,
-    makeTransforms,
-}
+module.exports = makeTransforms
