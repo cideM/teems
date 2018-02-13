@@ -28,9 +28,11 @@ foreground: colors!foreground
 color0: colors!0
 `
 
-test('transform', t => {
+test('transform does not throw', t => {
     t.notThrows(() => transform(['test'], mockAppTransforms(themes[0].colors)))
+})
 
+test('transform transforms colors', t => {
     const result = transform(mockFile.split('\n'), mockAppTransforms(themes[0].colors))
     t.deepEqual(result.join('\n'), expected, 'Should transform colors')
 })
