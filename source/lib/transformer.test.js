@@ -1,7 +1,7 @@
-import test from 'ava'
-import themes from '../cli/themes.json'
-import transform from './transformer'
-import { apps } from './apps/index'
+const test = require('tape')
+const themes = require('../cli/themes.json')
+const transform = require('./transformer')
+const apps = require('./apps/index')
 
 function hexWithoutHash(string) {
     return string.slice(1)
@@ -91,7 +91,7 @@ const AFTER = {
     `,
 }
 
-apps.forEach(app => {
+apps.all.forEach(app => {
     const beforeForApp = BEFORE[app.name]
     const afterForApp = AFTER[app.name]
     if (beforeForApp && afterForApp) {
@@ -100,7 +100,8 @@ apps.forEach(app => {
                 beforeForApp.split('\n'),
                 app.makeTransforms(testedMods)
             ).join('\n')
-            t.is(transformed, afterForApp)
+            t.equal(transformed, afterForApp)
+            t.end()
         })
     }
 })

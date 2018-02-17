@@ -64,5 +64,5 @@ const normal = [
 module.exports = {
     special,
     normal,
-    apps: normal.concat(special),
+    all: normal.concat(special),
 }

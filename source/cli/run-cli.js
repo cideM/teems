@@ -6,7 +6,7 @@ const meow = require('meow')
 const fs = require('fs')
 const path = require('path')
 const run = require('../lib/index')
-const { apps, special } = require('../lib/apps/index')
+const apps = require('../lib/apps/index')
 const config = require('../../config/index')
 
 const cli = meow(
@@ -46,16 +46,15 @@ if (Object.keys(cli.flags).length > 0) {
         console.log(config)
         console.log(' ')
         console.log(`Apps that support the "misc" property`)
-        special.forEach(app => console.log(app.name))
+        apps.special.forEach(app => console.log(app.name))
         console.log(' ')
         console.log('All supported apps')
-        apps.forEach(app => console.log(app.name))
+        apps.all.forEach(app => console.log(app.name))
     }
 } else if (cli.input.length > 0) {
-    run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
-        p.then(result => console.log(`\u2713 ${result[0]}`)).catch(error => {
-            // console.log(error.appName)
-            console.error(`\u26CC ${error.appName}: ${error.message}`)
+    run(apps.all, themes, cli.input[0], config.backupDir).forEach(p => {
+        p.then(result => console.log(`ok: ${result[0]}`)).catch(error => {
+            console.error(`not ok: ${error.appName}: ${error.message}`)
         })
     })
 } else {

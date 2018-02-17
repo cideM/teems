@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "eslint --fix --ext .js ./",
-    "test": "npm run lint && ava",
+    "test": "npm run lint && tape './source/**/*.test.js' | tnyan",
     "format": "prettier \"{source}/**/*.js\" --config prettierrc.yaml --write",
     "postinstall": "node source/cli/run-post-install.js"
   },
@@ -39,13 +39,14 @@
     "xdg-basedir": "^3.0.0"
   },
   "devDependencies": {
-    "ava": "^0.22.0",
     "eslint": "^4.7.0",
     "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-ava": "^4.5.0",
+    "eslint-plugin-node": "^6.0.0",
     "eslint-plugin-prettier": "^2.6.0",
     "nyc": "^11.2.1",
-    "prettier": "^1.10.2"
+    "prettier": "^1.10.2",
+    "tap-nyan": "^1.1.0",
+    "tape": "^4.8.0"
   },
   "ava": {
     "files": [
