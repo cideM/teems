@@ -5,6 +5,7 @@ const xdgBase = require('xdg-basedir')
 const alacritty = require('./alacritty')
 const X = require('./Xresources')
 const termite = require('./termite')
+const kitty = require('./kitty')
 const nvim = require('./nvim')
 const vsc = require('./vsc')
 
@@ -58,6 +59,15 @@ const normal = [
             // path.join(home, ".config/termite/config")
         ],
         makeTransforms: termite,
+    },
+    {
+        name: 'kitty',
+        paths: [
+            path.join(xdgBase.config, 'kitty/kitty.conf'),
+            path.join(xdgBase.data, 'kitty/kitty.conf'),
+            // path.join(home, ".config/kitty/kitty.conf")
+        ],
+        makeTransforms: kitty,
     },
 ]
 

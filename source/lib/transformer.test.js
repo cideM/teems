@@ -49,6 +49,12 @@ const BEFORE = {
     nvim: `
         colo foo
     `,
+    kitty: `
+        foreground      #foobar
+        background #blub
+        color5 #fax
+        color15    #ddddddddd
+    `,
 }
 
 const AFTER = {
@@ -88,6 +94,12 @@ const AFTER = {
     `,
     nvim: `
         colorscheme ${testedTheme.mods.misc.nvim}
+    `,
+    kitty: `
+        foreground #${hexWithoutHash(testedColors.foreground)}
+        background #${hexWithoutHash(testedColors.background)}
+        color5 #${hexWithoutHash(testedColors.color5)}
+        color15 #${hexWithoutHash(testedColors.color15)}
     `,
 }
 
