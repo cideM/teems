@@ -1,6 +1,6 @@
 'use-strict'
 
-const makeSelectorWord = word => new RegExp(`${word}\\s*\\s*.*`)
+const makeSelectorWord = word => new RegExp(`\\b${word}\\b.*`, 'g')
 const makeSelectorColor = () => /color(\d+)\s*#[a-zA-Z0-9]*/
 
 const colorTransforms = colors =>
