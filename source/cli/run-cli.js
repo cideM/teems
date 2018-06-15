@@ -4,7 +4,6 @@
 
 const meow = require('meow')
 const fs = require('fs')
-const path = require('path')
 const run = require('../lib/index')
 const apps = require('../lib/apps/index')
 
