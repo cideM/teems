@@ -1,5 +1,4 @@
 const test = require('tape')
-const themes = require('../cli/themes.json')
 const transform = require('./transformer')
 const apps = require('./apps/index')
 
@@ -7,8 +6,26 @@ function hexWithoutHash(string) {
     return string.slice(1)
 }
 
-const testedTheme = themes.find(theme => theme.name === 'gruv-dark')
-const testedColors = testedTheme.colors
+const testedColors = {
+    foreground: '#dcdccc',
+    background: '#1f1f1f',
+    color0: '#1f1f1f',
+    color8: '#709080',
+    color1: '#705050',
+    color9: '#dca3a3',
+    color2: '#60b48a',
+    color10: '#c3bf9f',
+    color3: '#dfaf8f',
+    color11: '#f0dfaf',
+    color4: '#506070',
+    color12: '#94bff3',
+    color5: '#dc8cc3',
+    color13: '#ec93d3',
+    color6: '#8cd0d3',
+    color14: '#93e0e3',
+    color7: '#dcdccc',
+    color15: '#ffffff',
+}
 
 const BEFORE = {
     alacritty: `
