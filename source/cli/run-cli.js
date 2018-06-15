@@ -14,10 +14,8 @@ const cli = meow(
 	Also r/unixporn and Terminal.sexy, because relevant.
 
   Usage
-        $  teems-cli [pathToConfig] [themeName] When called with one or more options, no theme will be activated and [string] will be ignored.
-
-  Example
-        $ teems-cli ~/themes.json foo
+        $  teems-cli ~/themes.json foo # activates theme named 'foo'
+        $  teems-cli ~/themes.json -l  # list themes in file
 
   Options
   	-l, --list List all available themes
@@ -34,10 +32,10 @@ const cli = meow(
     }
 )
 
-const themes = JSON.parse(fs.readFileSync(path.join(cli.input[0])))
-
 if (Object.keys(cli.flags).length > 0) {
     if (cli.flags.list) {
+        const themes = JSON.parse(fs.readFileSync(cli.input[0]))
+
         themes.forEach(theme => {
             console.log(theme.name)
         })
@@ -48,6 +46,7 @@ if (Object.keys(cli.flags).length > 0) {
         apps.forEach(app => console.log(app.name))
     }
 } else if (cli.input.length > 0) {
+    const themes = JSON.parse(fs.readFileSync(cli.input[0]))
     run(apps, themes, cli.input[1]).forEach(p => {
         p.then(result => console.log(`ok: ${result[0]}`)).catch(error => {
             console.error(`not ok: ${error.appName}: ${error.message}`)
