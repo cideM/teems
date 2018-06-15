@@ -2,36 +2,14 @@ const path = require('path')
 const os = require('os')
 const xdgBase = require('xdg-basedir')
 
-const { makeTransforms: alacritty } = require('./alacritty')
-const { makeTransforms: X } = require('./Xresources')
-const { makeTransforms: termite } = require('./termite')
-const { makeTransforms: nvim } = require('./nvim')
-const { makeTransforms: vsc } = require('./vsc')
+const alacritty = require('./alacritty')
+const X = require('./Xresources')
+const termite = require('./termite')
+const kitty = require('./kitty')
 
 const home = os.homedir()
 
-const special = [
-    {
-        name: 'nvim',
-        paths: [
-            path.join(xdgBase.config, 'nvim/init.vim'),
-            path.join(xdgBase.data, 'nvim/init.vim'),
-            // path.join(home, ".config/nvim/init.vim")
-        ],
-        makeTransforms: nvim,
-    },
-    {
-        name: 'vsc',
-        paths: [
-            path.join(xdgBase.config, 'Code - Insiders/User/settings.json'),
-            path.join(xdgBase.data, 'Code - Insiders/User/settings.json'),
-            // path.join(home, ".config/Code - Insiders/User/settings.json")
-        ],
-        makeTransforms: vsc,
-    },
-]
-
-const normal = [
+const apps = [
     {
         name: 'alacritty',
         paths: [
@@ -57,10 +35,15 @@ const normal = [
         ],
         makeTransforms: termite,
     },
+    {
+        name: 'kitty',
+        paths: [
+            path.join(xdgBase.config, 'kitty/kitty.conf'),
+            path.join(xdgBase.data, 'kitty/kitty.conf'),
+            // path.join(home, ".config/kitty/kitty.conf")
+        ],
+        makeTransforms: kitty,
+    },
 ]
 
-module.exports = {
-    special,
-    normal,
-    apps: normal.concat(special),
-}
+module.exports = apps

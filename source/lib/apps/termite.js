@@ -9,13 +9,9 @@ const colorTransforms = colors =>
 const makeTransforms = ({ colors }) => [
     [makeSelectorWord('foreground'), () => `foreground = ${colors.foreground}`],
     [makeSelectorWord('foreground_bold'), () => `foreground_bold = ${colors.foreground}`],
-    [makeSelectorWord('cursor'), () => `cursor = `],
+    [makeSelectorWord('cursor'), () => `cursor =`],
     [makeSelectorWord('background'), () => `background = ${colors.background}`],
     ...colorTransforms(colors),
 ]
 
-module.exports = {
-    makeTransforms,
-    makeSelectorColor,
-    makeSelectorWord,
-}
+module.exports = makeTransforms

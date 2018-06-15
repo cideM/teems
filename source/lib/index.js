@@ -1,37 +1,9 @@
 'use-strict'
-
 const assert = require('assert')
 const fs = require('fs')
-const path = require('path')
 const transform = require('./transformer')
-const cpr = require('cpr')
 
-function makeNewConfig(theme, makeTransforms, oldConfig) {
-    const configLines = oldConfig.split('\n')
-    return transform(configLines, makeTransforms(theme.mods)).join('\n')
-}
-
-const last = xs => xs.slice(-1)[0]
-
-function backup(backupPath, filePath, identifier) {
-    return new Promise((resolve, reject) => {
-        const fileName = last(filePath.split('/'))
-
-        cpr(
-            filePath,
-            path.join(backupPath, `${identifier}-${fileName}`),
-            { overwrite: true },
-            (err, files) => {
-                if (err && err.code !== 'ENOENT') {
-                    reject(err)
-                }
-                resolve(files)
-            }
-        )
-    })
-}
-
-const mandatory = [
+const MANDATORY_COLORS = [
     'foreground',
     'background',
     'color0',
@@ -52,16 +24,20 @@ const mandatory = [
     'color15',
 ]
 
-const reg = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/
+const VALID_COLOR_REGEXP = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/
+
+function makeNewConfig(theme, makeTransforms, oldConfig) {
+    const configLines = oldConfig.split('\n')
+    return transform(configLines, makeTransforms({ colors: theme.colors })).join('\n')
+}
 
 function checkTheme(theme) {
-    assert.ok(theme.mods, `Theme ${theme.name} has no property "mods"`)
-    assert.ok(theme.mods.colors, `Theme ${theme.name} has no property "colors" in "mods"`)
-    const { colors } = theme.mods
-    mandatory.forEach(x => {
-        if (Object.keys(colors).indexOf(x) === -1) {
+    assert.ok(theme.colors, `Theme ${theme.name} has no property "colors"`)
+    const { colors } = theme
+    MANDATORY_COLORS.forEach(x => {
+        if (!Object.keys(colors).includes(x)) {
             throw new Error(`Color ${x} is missing in theme ${theme.name}`)
-        } else if (!reg.test(colors[x])) {
+        } else if (!VALID_COLOR_REGEXP.test(colors[x])) {
             throw new Error(
                 `Color ${colors[x]} is not a valid color, in theme ${
                     theme.name
@@ -71,16 +47,17 @@ function checkTheme(theme) {
     })
 }
 
-function run(apps, themes, selectedTheme, backupPath) {
+function run(apps, themes, selectedTheme) {
     assert.ok(Array.isArray(apps), 'Apps must be an array')
     assert.ok(Array.isArray(themes), 'Themes must be an array')
+
     themes.forEach(checkTheme)
-    assert.ok(typeof backupPath === 'string', 'backupPath must be a string')
+
     assert.ok(typeof selectedTheme === 'string', 'Expected a string')
 
-    const theme = themes.find(theme1 => theme1.name === selectedTheme)
+    const themeToActivate = themes.find(theme => theme.name === selectedTheme)
 
-    if (!theme) {
+    if (!themeToActivate) {
         throw new Error(`Couldn't find theme ${selectedTheme}`)
     }
 
@@ -95,16 +72,14 @@ function run(apps, themes, selectedTheme, backupPath) {
                     reject(error)
                 }
 
-                await Promise.all(
-                    validPaths.map((filePath, ii) =>
-                        backup(backupPath, filePath, `${app.name}-${ii}`)
-                    )
-                )
-
                 try {
                     const newConfigsAndPaths = validPaths.map(filePath => {
                         const oldConfig = fs.readFileSync(filePath, 'utf8')
-                        const newConfig = makeNewConfig(theme, app.makeTransforms, oldConfig)
+                        const newConfig = makeNewConfig(
+                            themeToActivate,
+                            app.makeTransforms,
+                            oldConfig
+                        )
                         return [newConfig, filePath]
                     })
 

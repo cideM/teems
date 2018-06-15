@@ -32,7 +32,4 @@ const makeTransforms = ({ colors }) => [
     makeTransform('white', colors.color15),
 ]
 
-module.exports = {
-    makeTransforms,
-    makeSelector,
-}
+module.exports = makeTransforms
