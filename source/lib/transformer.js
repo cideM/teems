@@ -1,6 +1,5 @@
 const transform = (lines, transforms, result = []) => {
     if (!lines.length) return result
-
     const [currentLine] = lines
 
     const matchingTransformation = transforms.find(([regexp]) => regexp && regexp.test(currentLine))

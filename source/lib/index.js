@@ -30,7 +30,7 @@ const VALID_COLOR_REGEXP = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/
 
 function makeNewConfig(theme, makeTransforms, oldConfig) {
     const configLines = oldConfig.split('\n')
-    return transform(configLines, makeTransforms(theme.mods)).join('\n')
+    return transform(configLines, makeTransforms({ colors: theme.colors })).join('\n')
 }
 
 function last(xs) {
@@ -56,9 +56,8 @@ function backup(backupPath, filePath, identifier) {
 }
 
 function checkTheme(theme) {
-    assert.ok(theme.mods, `Theme ${theme.name} has no property "mods"`)
-    assert.ok(theme.mods.colors, `Theme ${theme.name} has no property "colors" in "mods"`)
-    const { colors } = theme.mods
+    assert.ok(theme.colors, `Theme ${theme.name} has no property "colors"`)
+    const { colors } = theme
     MANDATORY_COLORS.forEach(x => {
         if (!Object.keys(colors).includes(x)) {
             throw new Error(`Color ${x} is missing in theme ${theme.name}`)

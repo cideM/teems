@@ -1,60 +1,48 @@
 [
-  {
-    "name": "dracula",
-    "mods": {
-      "colors": {
-        "foreground": "#F8F8F2",
-        "background": "#282A36",
-        "color0": "#000000",
-        "color8": "#4D4D4D",
-        "color1": "#FF5555",
-        "color9": "#FF6E67",
-        "color2": "#50FA7B",
-        "color10": "#5AF78E",
-        "color3": "#F1FA8C",
-        "color11": "#F4F99D",
-        "color4": "#BD93F9",
-        "color12": "#CAA9FA",
-        "color5": "#FF79C6",
-        "color13": "#FF92D0",
-        "color6": "#8BE9FD",
-        "color14": "#9AEDFE",
-        "color7": "#BFBFBF",
-        "color15": "#E6E6E6"
-      },
-      "misc": {
-        "nvim": "dracula",
-        "vsc": "dracula"
-      }
+    {
+        "name": "dracula",
+        "colors": {
+            "foreground": "#F8F8F2",
+            "background": "#282A36",
+            "color0": "#000000",
+            "color8": "#4D4D4D",
+            "color1": "#FF5555",
+            "color9": "#FF6E67",
+            "color2": "#50FA7B",
+            "color10": "#5AF78E",
+            "color3": "#F1FA8C",
+            "color11": "#F4F99D",
+            "color4": "#BD93F9",
+            "color12": "#CAA9FA",
+            "color5": "#FF79C6",
+            "color13": "#FF92D0",
+            "color6": "#8BE9FD",
+            "color14": "#9AEDFE",
+            "color7": "#BFBFBF",
+            "color15": "#E6E6E6"
+        }
+    },
+    {
+        "name": "gruv-dark",
+        "colors": {
+            "background": "#282828",
+            "foreground": "#ebdbb2",
+            "color0": "#282828",
+            "color8": "#928374",
+            "color1": "#cc241d",
+            "color9": "#fb4934",
+            "color2": "#98971a",
+            "color10": "#b8bb26",
+            "color3": "#d79921",
+            "color11": "#fabd2f",
+            "color4": "#458588",
+            "color12": "#83a598",
+            "color5": "#b16286",
+            "color13": "#d3869b",
+            "color14": "#8ec07c",
+            "color6": "#a89984",
+            "color7": "#a89984",
+            "color15": "#ebdbb2"
+        }
     }
-  },
-  {
-    "name": "gruv-dark",
-    "mods": {
-      "colors": {
-        "background": "#282828",
-        "foreground": "#ebdbb2",
-        "color0": "#282828",
-        "color8": "#928374",
-        "color1": "#cc241d",
-        "color9": "#fb4934",
-        "color2": "#98971a",
-        "color10": "#b8bb26",
-        "color3": "#d79921",
-        "color11": "#fabd2f",
-        "color4": "#458588",
-        "color12": "#83a598",
-        "color5": "#b16286",
-        "color13": "#d3869b",
-        "color14": "#8ec07c",
-        "color6": "#a89984",
-        "color7": "#a89984",
-        "color15": "#ebdbb2"
-      },
-      "misc": {
-        "nvim": "gruvbox",
-        "vsc": "gruvbox"
-      }
-    }
-  }
 ]

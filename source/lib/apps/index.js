@@ -6,35 +6,10 @@ const alacritty = require('./alacritty')
 const X = require('./Xresources')
 const termite = require('./termite')
 const kitty = require('./kitty')
-const nvim = require('./nvim')
-const vsc = require('./vsc')
 
 const home = os.homedir()
 
-// These apps support replacing something other than color values
-// For example, in neovim the "colo(rshceme" value can be changed
-const special = [
-    {
-        name: 'nvim',
-        paths: [
-            path.join(xdgBase.config, 'nvim/init.vim'),
-            path.join(xdgBase.data, 'nvim/init.vim'),
-            // path.join(home, ".config/nvim/init.vim")
-        ],
-        makeTransforms: nvim,
-    },
-    {
-        name: 'vsc',
-        paths: [
-            path.join(xdgBase.config, 'Code - Insiders/User/settings.json'),
-            path.join(xdgBase.data, 'Code - Insiders/User/settings.json'),
-            // path.join(home, ".config/Code - Insiders/User/settings.json")
-        ],
-        makeTransforms: vsc,
-    },
-]
-
-const normal = [
+const apps = [
     {
         name: 'alacritty',
         paths: [
@@ -71,8 +46,4 @@ const normal = [
     },
 ]
 
-module.exports = {
-    special,
-    normal,
-    all: normal.concat(special),
-}
+module.exports = apps

@@ -8,8 +8,7 @@ function hexWithoutHash(string) {
 }
 
 const testedTheme = themes.find(theme => theme.name === 'gruv-dark')
-const testedMods = testedTheme.mods
-const testedColors = testedMods.colors
+const testedColors = testedTheme.colors
 
 const BEFORE = {
     alacritty: `
@@ -89,12 +88,6 @@ const AFTER = {
         color0 = #${hexWithoutHash(testedColors.color0)}
         color8 = #${hexWithoutHash(testedColors.color8)}
     `,
-    vsc: `
-        "workbench.colorTheme": "${testedTheme.mods.misc.vsc}"
-    `,
-    nvim: `
-        colorscheme ${testedTheme.mods.misc.nvim}
-    `,
     kitty: `
         foreground #${hexWithoutHash(testedColors.foreground)}
         background #${hexWithoutHash(testedColors.background)}
@@ -103,14 +96,14 @@ const AFTER = {
     `,
 }
 
-apps.all.forEach(app => {
+apps.forEach(app => {
     const beforeForApp = BEFORE[app.name]
     const afterForApp = AFTER[app.name]
     if (beforeForApp && afterForApp) {
         test(`transform ${app.name}`, t => {
             const transformed = transform(
                 beforeForApp.split('\n'),
-                app.makeTransforms(testedMods)
+                app.makeTransforms({ colors: testedColors })
             ).join('\n')
             t.equal(transformed, afterForApp)
             t.end()

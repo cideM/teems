@@ -45,14 +45,11 @@ if (Object.keys(cli.flags).length > 0) {
         console.log('Stored paths to your teems folder')
         console.log(config)
         console.log(' ')
-        console.log(`Apps that support the "misc" property`)
-        apps.special.forEach(app => console.log(app.name))
-        console.log(' ')
         console.log('All supported apps')
-        apps.all.forEach(app => console.log(app.name))
+        apps.forEach(app => console.log(app.name))
     }
 } else if (cli.input.length > 0) {
-    run(apps.all, themes, cli.input[0], config.backupDir).forEach(p => {
+    run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
         p.then(result => console.log(`ok: ${result[0]}`)).catch(error => {
             console.error(`not ok: ${error.appName}: ${error.message}`)
         })
