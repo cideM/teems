@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "eslint --fix --ext .js ./",
-    "test": "npm run lint && tape './source/**/*.test.js' | tap-summary",
+    "test": "npm run lint && tape './source/**/*.test.js' | faucet",
     "format": "prettier \"{source}/**/*.js\" --config prettierrc.yaml --write",
     "postinstall": "node source/cli/run-post-install.js"
   },
@@ -43,9 +43,9 @@
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-node": "^6.0.0",
     "eslint-plugin-prettier": "^2.6.0",
+    "faucet": "^0.0.1",
     "nyc": "^11.2.1",
     "prettier": "^1.10.2",
-    "tap-summary": "^4.0.0",
     "tape": "^4.8.0"
   }
 }
