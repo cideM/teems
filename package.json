@@ -27,7 +27,7 @@
     "format": "prettier \"{source}/**/*.js\" --config prettierrc.yaml --write"
   },
   "keywords": [
-    "Themes,",
+    "Themes",
     "Node",
     ""
   ],

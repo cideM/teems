@@ -13,8 +13,7 @@ I needed a simple program to switch the color theme of all the terminals I use. 
 
 ```shell
 npm install --global teems
-touch ~/.config/teems
-nvim themes.json           # Add a theme
+nvim ~/.config/themes.json           # Add a theme
 teems-cli [name of theme]  # Activate theme
 ```
 
