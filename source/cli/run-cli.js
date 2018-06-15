@@ -7,7 +7,6 @@ const fs = require('fs')
 const path = require('path')
 const run = require('../lib/index')
 const apps = require('../lib/apps/index')
-const config = require('../../config/index')
 
 const cli = meow(
     `
@@ -15,7 +14,10 @@ const cli = meow(
 	Also r/unixporn and Terminal.sexy, because relevant.
 
   Usage
-		$  teems-cli [string] When called with one or more options, no theme will be activated and [string] will be ignored.
+        $  teems-cli [pathToConfig] [themeName] When called with one or more options, no theme will be activated and [string] will be ignored.
+
+  Example
+        $ teems-cli ~/themes.json foo
 
   Options
   	-l, --list List all available themes
@@ -32,7 +34,7 @@ const cli = meow(
     }
 )
 
-const themes = JSON.parse(fs.readFileSync(path.join(config.appDir, 'themes.json')))
+const themes = JSON.parse(fs.readFileSync(path.join(cli.input[0])))
 
 if (Object.keys(cli.flags).length > 0) {
     if (cli.flags.list) {
@@ -42,14 +44,11 @@ if (Object.keys(cli.flags).length > 0) {
     }
 
     if (cli.flags.dump) {
-        console.log('Stored paths to your teems folder')
-        console.log(config)
-        console.log(' ')
         console.log('All supported apps')
         apps.forEach(app => console.log(app.name))
     }
 } else if (cli.input.length > 0) {
-    run(apps, themes, cli.input[0], config.backupDir).forEach(p => {
+    run(apps, themes, cli.input[1]).forEach(p => {
         p.then(result => console.log(`ok: ${result[0]}`)).catch(error => {
             console.error(`not ok: ${error.appName}: ${error.message}`)
         })
