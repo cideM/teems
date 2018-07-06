@@ -24,9 +24,16 @@ const cli = meow(
 		Hit me up on twitter @AyanamiVey or write an issue on https://github.com/cideM/teems-cli
 `,
     {
-        alias: {
-            l: 'list',
-            d: 'dump',
+        input: ['configPath'],
+        flags: {
+            list: {
+                type: 'boolean',
+                alias: 'l',
+            },
+            dump: {
+                type: 'boolean',
+                alias: 'd',
+            },
         },
     }
 )

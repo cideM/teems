@@ -3,4 +3,5 @@ tags
 .vscode/*
 .nyc_output
 package-lock.json.*
+package-lock.json
 yarn-error.log
