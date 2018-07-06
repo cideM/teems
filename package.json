@@ -1,6 +1,6 @@
 {
   "name": "teems",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Switch themes by modifying config files",
   "license": "MIT",
   "engines": {
