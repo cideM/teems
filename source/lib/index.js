@@ -26,12 +26,15 @@ const MANDATORY_COLORS = [
     'color15',
 ]
 
-const VALID_COLOR_REGEXP = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/
-
-function makeNewConfig(theme, makeTransforms, oldConfig) {
-    const configLines = oldConfig.split('\n')
-    return transform(configLines, makeTransforms(theme.mods)).join('\n')
+function makeApp(name, paths, transformFn) {
+    return {
+        name,
+        paths,
+        transformFn,
+    }
 }
+
+const VALID_COLOR_REGEXP = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/
 
 function last(xs) {
     return xs.slice(-1)[0]
@@ -56,9 +59,10 @@ function backup(backupPath, filePath, identifier) {
 }
 
 function checkTheme(theme) {
-    assert.ok(theme.mods, `Theme ${theme.name} has no property "mods"`)
-    assert.ok(theme.mods.colors, `Theme ${theme.name} has no property "colors" in "mods"`)
-    const { colors } = theme.mods
+    assert.ok(theme.colors, `Theme ${theme.name} has no property "colors" in "mods"`)
+
+    const { colors } = theme
+
     MANDATORY_COLORS.forEach(x => {
         if (!Object.keys(colors).includes(x)) {
             throw new Error(`Color ${x} is missing in theme ${theme.name}`)
@@ -72,16 +76,18 @@ function checkTheme(theme) {
     })
 }
 
+function runApp(theme, app) {
+    for (const p in app.paths) {
+        const config = fs.readFileSync(p, 'utf8')
+
+        const newConfig = app.transformFn(theme, config)
+
+        fs.writeFileSync(p, newConfig, 'utf8')
+    }
+}
+
 function run(apps, themes, selectedTheme, backupPath) {
-    assert.ok(Array.isArray(apps), 'Apps must be an array')
-    assert.ok(Array.isArray(themes), 'Themes must be an array')
-
-    themes.forEach(checkTheme)
-
-    assert.ok(typeof backupPath === 'string', 'backupPath must be a string')
-    assert.ok(typeof selectedTheme === 'string', 'Expected a string')
-
-    const theme = themes.find(theme1 => theme1.name === selectedTheme)
+    const theme = themes.find(t => t.name === selectedTheme)
 
     if (!theme) {
         throw new Error(`Couldn't find theme ${selectedTheme}`)
