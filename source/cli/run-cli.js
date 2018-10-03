@@ -1,62 +1,71 @@
 #!/usr/bin/env node
+// TODO: Commander!
 
-'use-strict'
-
-const meow = require('meow')
 const fs = require('fs')
-const path = require('path')
-const run = require('../lib/index')
-const apps = require('../lib/apps/index')
-const config = require('../../config/index')
+const { app: alacritty } = require('../lib/apps/alacritty')
+const meow = require('meow')
+const listThemes = require('../lib/listThemes')
+
+const apps = [alacritty]
 
 const cli = meow(
     `
-	Changing your terminal color schemes should be easy.
-	Also r/unixporn and Terminal.sexy, because relevant.
+    Usage
+        $ teems-cli [pathToConfig] <themeName>
 
-  Usage
-		$  teems-cli [string] When called with one or more options, no theme will be activated and [string] will be ignored.
+        Path to config is a required argument and should point at a .json file containing themes.
+        One is created automatically in your OS configuration folder, as "themes.json".
 
-  Options
-  	-l, --list List all available themes
-		-d, --dump Dump teems configuration variables
+        When called without a theme name, it just lists the available themes.
 
-	 Help
-		Hit me up on twitter @AyanamiVey or write an issue on https://github.com/cideM/teems-cli
+    Options
+        -d, --dry Print modified config files without writing to disk
+
+    Help
+        Hit me up on twitter @AyanamiVey or write an issue on https://github.com/cideM/teems-cli
 `,
     {
-        alias: {
-            l: 'list',
-            d: 'dump',
+        flags: {
+            dry: {
+                type: 'boolean',
+                alias: 'd',
+            },
         },
     }
 )
 
-const themes = JSON.parse(fs.readFileSync(path.join(config.appDir, 'themes.json')))
+const main = (configPath, themeName, flags) => {
+    let themes
 
-if (Object.keys(cli.flags).length > 0) {
-    if (cli.flags.list) {
-        themes.forEach(theme => {
-            console.log(theme.name)
-        })
+    try {
+        themes = JSON.parse(fs.readFileSync(configPath))
+    } catch (e) {
+        throw new Error(`Could not read file ${configPath}`)
     }
 
-    if (cli.flags.dump) {
-        console.log('Stored paths to your teems folder')
-        console.log(config)
-        console.log(' ')
-        console.log(`Apps that support the "misc" property`)
-        apps.special.forEach(app => console.log(app.name))
-        console.log(' ')
-        console.log('All supported apps')
-        apps.all.forEach(app => console.log(app.name))
-    }
-} else if (cli.input.length > 0) {
-    run(apps.all, themes, cli.input[0], config.backupDir).forEach(p => {
-        p.then(result => console.log(`ok: ${result[0]}`)).catch(error => {
-            console.error(`not ok: ${error.appName}: ${error.message}`)
+    if (themeName) {
+        const theme = themes.find(t => t.name === themeName)
+
+        if (!theme) throw new Error(`No theme with name ${themeName} found in ${configPath}`)
+
+        apps.forEach(a => {
+            try {
+                console.log(flags.dry)
+                a.run(theme.colors, { dry: Boolean(flags.dry) })
+            } catch (e) {
+                // eslint-disable-next-line
+                console.error(`Error when transforming ${a.name}`)
+                throw e
+            }
         })
-    })
-} else {
-    cli.showHelp()
+    } else listThemes(themes)
 }
+
+const { flags, input } = cli
+
+const [pathToConfig, themeName] = input
+
+if (!pathToConfig) {
+    // eslint-disable-next-line
+    console.log('Please provide path to config file!')
+} else main(pathToConfig, themeName, flags)

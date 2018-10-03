@@ -1,7 +1,7 @@
 {
   "name": "teems",
   "version": "0.5.3",
-  "description": "Switch themes by modifying config files",
+  "description": "Easily manage terminal emulator color schemes.",
   "license": "MIT",
   "engines": {
     "node": ">= 8"
@@ -23,7 +23,7 @@
   },
   "scripts": {
     "lint": "eslint --fix --ext .js ./",
-    "test": "npm run lint && tape './source/**/*.test.js' | tnyan",
+    "test": "jest",
     "format": "prettier \"{source}/**/*.js\" --config prettierrc.yaml --write",
     "postinstall": "node source/cli/run-post-install.js"
   },
@@ -33,21 +33,17 @@
     ""
   ],
   "dependencies": {
-    "commander": "^2.18.0",
-    "cpr": "^2.2.0",
+    "meow": "^5.0.0",
     "mkdirp": "^0.5.1",
+    "tmp": "^0.0.33",
     "xdg-basedir": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.7.0",
+    "eslint": "^5.6.1",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-jest": "^21.24.1",
     "eslint-plugin-node": "^6.0.0",
     "eslint-plugin-prettier": "^2.6.0",
     "prettier": "^1.10.2"
-  },
-  "ava": {
-    "files": [
-      "source/**/*.test.js"
-    ]
   }
 }
