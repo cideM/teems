@@ -48,8 +48,8 @@ const transform = (colors, isBright, str) => {
 
         const newColorValue = newColor(colors, color, isBright)
 
-        return `${ws1}${color}:${ws2}'0x${newColorValue.slice(1)}'${trailing}\n`
-    } else return `${str}\n`
+        return `${ws1}${color}:${ws2}'0x${newColorValue.slice(1)}'${trailing}`
+    } else return `${str}`
 }
 
 const configName = 'alacritty.yml'
@@ -59,41 +59,36 @@ const paths = [
     path.join(os.homedir(), configName),
 ]
 
-const run = (colors, dryRun) =>
-    new Promise((res, rej) => {
-        for (const p of paths.filter(fs.existsSync)) {
-            let rl
-            let tmpFile
+const run = (colors, { dry }) =>
+    paths.filter(fs.existsSync).map(
+        p =>
+            new Promise(res => {
+                let rl
+                let isBright
 
-            try {
-                const interfaceOpts = {
+                const tmpFile = tmp.fileSync()
+
+                rl = readline.createInterface({
                     input: fs.createReadStream(p),
-                }
+                    output: fs.createWriteStream(tmpFile.name),
+                })
 
-                if (!dryRun) {
-                    tmpFile = tmp.fileSync()
-                    interfaceOpts.output = fs.createWriteStream(tmpFile.name)
-                }
+                rl.on('line', function(l) {
+                    isBright = ALACRITTY_BRIGHT_REGEXP.test(l)
 
-                rl = readline.createInterface(interfaceOpts)
-            } catch (e) {
-                rej(e)
-            }
+                    const next = transform(colors, isBright, l)
 
-            rl.on('line', function(l) {
-                const isBright = ALACRITTY_BRIGHT_REGEXP.test(l)
-                const next = transform(colors, isBright, l)
+                    if (dry) process.stdout.write(`${next}\n`)
 
-                if (dryRun) process.stdout.write(next)
-                else this.output.write(next)
+                    this.output.write(`${dry ? l : next}\n`)
+                })
+
+                rl.on('close', () => {
+                    fs.renameSync(tmpFile.name, p)
+                    res(p)
+                })
             })
-
-            rl.on('close', () => {
-                if (tmpFile) fs.renameSync(tmpFile.name, p)
-                res()
-            })
-        }
-    })
+    )
 
 const app = {
     name: 'alacritty',
