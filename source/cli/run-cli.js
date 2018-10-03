@@ -52,9 +52,9 @@ if (cli.flags.dump) {
 
 if (cli.input.length >= 2) {
     const themes = JSON.parse(fs.readFileSync(cli.input[0]))
-    console.log(cli.input[0])
+
     run(apps, themes, cli.input[1]).forEach(p => {
-        p.then(result => console.log(`ok: ${result[0]}`)).catch(error => {
+        p.then(result => console.log(`ok: ${result.appName}`)).catch(error => {
             console.error(`not ok: ${error.appName}: ${error.message}`)
         })
     })

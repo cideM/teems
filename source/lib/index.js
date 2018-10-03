@@ -26,14 +26,19 @@ const MANDATORY_COLORS = [
 
 const VALID_COLOR_REGEXP = /#[0-9a-fA-F]{3}$|#[0-9a-fA-F]{6}$/
 
+// TODO: just call app.transform(theme) and let the app handle everything
 function makeNewConfig(theme, makeTransforms, oldConfig) {
     const configLines = oldConfig.split('\n')
-    return transform(configLines, makeTransforms({ colors: theme.colors })).join('\n')
+    const transforms = makeTransforms({ colors: theme.colors })
+
+    return transform(configLines, transforms).join('\n')
 }
 
 function checkTheme(theme) {
     assert.ok(theme.colors, `Theme ${theme.name} has no property "colors"`)
+
     const { colors } = theme
+
     MANDATORY_COLORS.forEach(x => {
         if (!Object.keys(colors).includes(x)) {
             throw new Error(`Color ${x} is missing in theme ${theme.name}`)
@@ -72,24 +77,20 @@ function run(apps, themes, selectedTheme) {
                     reject(error)
                 }
 
-                try {
-                    const newConfigsAndPaths = validPaths.map(filePath => {
-                        const oldConfig = fs.readFileSync(filePath, 'utf8')
-                        const newConfig = makeNewConfig(
-                            themeToActivate,
-                            app.makeTransforms,
-                            oldConfig
-                        )
-                        return [newConfig, filePath]
-                    })
-
-                    newConfigsAndPaths.forEach(([newConfig, filePath]) =>
-                        fs.writeFileSync(filePath, newConfig, 'utf8')
+                for (const path in validPaths) {
+                    const newConfig = makeNewConfig(
+                        themeToActivate,
+                        app.makeTransforms,
+                        fs.readFileSync(path, 'utf8')
                     )
-                    resolve([app.name, validPaths])
-                } catch (error) {
-                    error.appName = app.name
-                    reject(error)
+
+                    try {
+                        fs.writeFileSync(path, newConfig, 'utf8')
+                    } catch (e) {
+                        reject(e)
+                    }
+
+                    resolve({ appName: app.name })
                 }
             })
     )
