@@ -59,6 +59,10 @@ const paths = [
     path.join(os.homedir(), configName),
 ]
 
+// Alacritty is the only app where you need surrounding context to interpret color names. It uses e.g., black for both
+// color0 and color8. The correct color is then determined by whether black appears in the normal or bright block.
+// That's why alacritty does not use the perLine function and instead mostly implements it again, but while keeping
+// track of the the bright color block.
 const run = (colors, { dry }) =>
     paths.filter(fs.existsSync).map(
         p =>
@@ -78,13 +82,14 @@ const run = (colors, { dry }) =>
 
                     const next = transform(colors, isBright, l)
 
-                    if (dry) process.stdout.write(`${next}\n`)
+                    if (dry) console.log(`${next}`)
 
                     this.output.write(`${dry ? l : next}\n`)
                 })
 
                 rl.on('close', () => {
                     fs.renameSync(tmpFile.name, p)
+                    tmpFile.removeCallback()
                     res(p)
                 })
             })

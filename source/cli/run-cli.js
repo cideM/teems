@@ -1,24 +1,25 @@
 #!/usr/bin/env node
-// TODO: Commander!
 
 const fs = require('fs')
-const { app: alacritty } = require('../lib/apps/alacritty')
-const { app: termite } = require('../lib/apps/termite')
 const meow = require('meow')
+const listApps = require('../lib/listApps')
+const activateTheme = require('../lib/activateTheme')
 const checkTheme = require('../lib/checkTheme')
 const listThemes = require('../lib/listThemes')
-
-const apps = [alacritty, termite]
 
 const cli = meow(
     `
     Usage
         $ teems-cli [pathToConfig] <themeName>
 
-        Path to config is a required argument and should point at a .json file containing themes.
-        One is created automatically in your OS configuration folder, as "themes.json".
+        Called with two arguments:
+            Activate <themeName> found in [pathToConfig]
+        Called with one argument
+            List themes in [pathToConfig]
+        Called with no arguments
+            List supported apps
 
-        When called without a theme name, it just lists the available themes.
+        An example themes.json is created automatically in your OS configuration folder.
 
     Options
         -d, --dry Print modified config files without writing to disk
@@ -37,6 +38,10 @@ const cli = meow(
 )
 
 const main = (configPath, themeName, flags) => {
+    if (!configPath) {
+        return listApps()
+    }
+
     let themes
 
     try {
@@ -53,17 +58,7 @@ const main = (configPath, themeName, flags) => {
 
         if (!theme) throw new Error(`No theme with name ${themeName} found in ${configPath}`)
 
-        apps.forEach(a => {
-            process.stdout.write(`Running transforms for ${a.name}...\n`)
-
-            const ps = a.run(theme.colors, { dry: Boolean(flags.dry) })
-
-            ps.forEach(p => {
-                p
-                    .then(fpath => process.stdout.write(`\u2705 Changed colors in ${fpath}\n`))
-                    .catch(e => `${process.stderr.write(`\u274C Error for ${fpath}:\n ${e})}\n`)
-            })
-        })
+        activateTheme(theme, flags.dry)
     } else listThemes(themes)
 }
 
@@ -71,7 +66,4 @@ const { flags, input } = cli
 
 const [pathToConfig, themeName] = input
 
-if (!pathToConfig) {
-    // eslint-disable-next-line
-    console.log('Please provide path to config file!')
-} else main(pathToConfig, themeName, flags)
+main(pathToConfig, themeName, flags)

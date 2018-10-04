@@ -27,7 +27,7 @@ const perLine = (fpath, dryRun, transform) =>
         rl.on('line', function(l) {
             const next = transform(l)
 
-            if (dryRun) process.stdout.write(`${next}\n`)
+            if (dryRun) console.log(`${next}`)
 
             this.output.write(`${dryRun ? l : next}\n`)
         })

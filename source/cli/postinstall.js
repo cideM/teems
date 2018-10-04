@@ -18,7 +18,6 @@ function postInstall() {
         if (e.code !== 'EEXIST') throw e
     }
 
-    // eslint-disable-next-line
     console.log(`Copied example themes.json to ${targetPath}`)
 }
 
