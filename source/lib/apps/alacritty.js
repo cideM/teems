@@ -1,6 +1,6 @@
 'use-strict'
 
-const makeSelector = word => new RegExp(`(${word}):(\\s*)'[a-zA-Z0-9]*'`)
+const makeSelector = word => new RegExp(`(${word}):(\\s*)['"][a-zA-Z0-9]*['"]`)
 
 const transformColor = color => color.replace(/#/, '0x')
 
@@ -9,6 +9,7 @@ const makeTransform = (selector, newColor) => [
     (match, p1, p2) => `${p1}:${p2}'${transformColor(newColor)}'`,
 ]
 
+// TODO: add dim colors
 const makeTransforms = ({ colors }) => [
     makeTransform('foreground', colors.foreground),
     makeTransform('background', colors.background),

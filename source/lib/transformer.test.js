@@ -35,6 +35,7 @@ const BEFORE = {
             background: '0x282A36'
         cursor:
             text:       '0xF8F8F2'
+            cursor:     '0xF8F8F2'
 
         # Normal colors
         normal:
@@ -42,7 +43,7 @@ const BEFORE = {
 
         # Bright colors
         bright:
-            black:      '0x4D4D4D'
+            black:      "0x4D4D4D"
     `,
     Xresources: `
         *.background: #282A36
@@ -81,6 +82,7 @@ const AFTER = {
             background: '0x${hexWithoutHash(testedColors.background)}'
         cursor:
             text:       '0x${hexWithoutHash(testedColors.foreground)}'
+            cursor:     '0x${hexWithoutHash(testedColors.foreground)}'
 
         # Normal colors
         normal:
