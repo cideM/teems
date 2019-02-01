@@ -17,6 +17,8 @@ const colorNames = [
     'foreground',
     'background',
     'black',
+    'cursor',
+    'text',
     'red',
     'green',
     'yellow',

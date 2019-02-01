@@ -5,7 +5,7 @@ const readline = require('readline')
 const fs = require('fs')
 const tmp = require('tmp')
 
-const ALACRITTY_COLOR_LINE_REGEXP = /^(\s*)(foreground|background|black|red|green|yellow|blue|magenta|cyan|white):(\s*)'0x(\w{6})'(.*)/
+const ALACRITTY_COLOR_LINE_REGEXP = /^(\s*)(cursor|text|foreground|background|black|red|green|yellow|blue|magenta|cyan|white):(\s*)'0x(\w{6})'(.*)/
 
 const ALACRITTY_BRIGHT_REGEXP = /^\s*bright:/
 
@@ -49,7 +49,7 @@ const transform = (colors, isBright, str) => {
         const newColorValue = newColor(colors, color, isBright)
 
         return `${ws1}${color}:${ws2}'0x${newColorValue.slice(1)}'${trailing}`
-    } else return `${str}`
+    } else return str
 }
 
 const configName = 'alacritty.yml'
@@ -59,10 +59,12 @@ const paths = [
     path.join(os.homedir(), configName),
 ]
 
-// Alacritty is the only app where you need surrounding context to interpret color names. It uses e.g., black for both
-// color0 and color8. The correct color is then determined by whether black appears in the normal or bright block.
-// That's why alacritty does not use the perLine function and instead mostly implements it again, but while keeping
-// track of the the bright color block.
+// Alacritty is the only app where you need surrounding context to interpret
+// color names. It uses e.g., black for both color0 and color8. The correct
+// color is then determined by whether black appears in the normal or bright
+// block.  That's why alacritty does not use the perLine function and instead
+// mostly implements it again, but while keeping track of the the bright color
+// block.
 const run = (colors, { dry }) =>
     paths.filter(fs.existsSync).map(
         p =>
