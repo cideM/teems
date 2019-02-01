@@ -24,6 +24,7 @@
   "scripts": {
     "lint": "eslint --fix --ext .js ./",
     "test": "jest",
+    "test:watch": "jest --watch",
     "format": "prettier \"{source}/**/*.js\" --config prettierrc.yaml --write",
     "postinstall": "node source/cli/run-post-install.js"
   },

@@ -1,48 +1,46 @@
-const { COLOR_LINE_REGEXP, transform } = require('../XTerm')
-const { TEST_COLORS } = require('./shared')
+const { run } = require('./xterm')
+const { TEST_COLORS_HEX } = require('../testShared.js')
 
-const colorNames = [
-    'foreground',
-    'background',
-    'color0',
-    'color1',
-    'color2',
-    'color3',
-    'color4',
-    'color5',
-    'color6',
-    'color7',
-    'color8',
-    'color9',
-    'color10',
-    'color11',
-    'color12',
-    'color13',
-    'color14',
-    'color15',
-]
+test('run', () => {
+    let config = `
+        XTerm*foreground: #c5c8c6
+        XTerm*background: #1d1f21
+        XTerm*color0: #1d1f21
+        XTerm*color8: #969896
+        XTerm*color1: #cc6666
+        XTerm*color9: #cc6666
+        XTerm*color2: #b5bd68
+        XTerm*color10: #b5bd68
+        XTerm*color3: #f0c674
+        XTerm*color11: #f0c674
+        XTerm*color4: #81a2be
+        XTerm*color12: #81a2be
+        XTerm*color5: #b294bb
+        XTerm*color13: #b294bb
+        XTerm*color6: #8abeb7
+        XTerm*color14: #8abeb7
+        XTerm*color7: #c5c8c6
+        XTerm*color15: #ffffff`
 
-test('COLOR_LINE_REGEXP', () => {
-    colorNames.forEach(c => {
-        expect(`XTerm*${c}: #ff22AA`).toMatch(COLOR_LINE_REGEXP)
-    })
+    let expected = `
+        XTerm*foreground: ${TEST_COLORS_HEX.foreground}
+        XTerm*background: ${TEST_COLORS_HEX.background}
+        XTerm*color0: ${TEST_COLORS_HEX.color0}
+        XTerm*color8: ${TEST_COLORS_HEX.color8}
+        XTerm*color1: ${TEST_COLORS_HEX.color1}
+        XTerm*color9: ${TEST_COLORS_HEX.color9}
+        XTerm*color2: ${TEST_COLORS_HEX.color2}
+        XTerm*color10: ${TEST_COLORS_HEX.color10}
+        XTerm*color3: ${TEST_COLORS_HEX.color3}
+        XTerm*color11: ${TEST_COLORS_HEX.color11}
+        XTerm*color4: ${TEST_COLORS_HEX.color4}
+        XTerm*color12: ${TEST_COLORS_HEX.color12}
+        XTerm*color5: ${TEST_COLORS_HEX.color5}
+        XTerm*color13: ${TEST_COLORS_HEX.color13}
+        XTerm*color6: ${TEST_COLORS_HEX.color6}
+        XTerm*color14: ${TEST_COLORS_HEX.color14}
+        XTerm*color7: ${TEST_COLORS_HEX.color7}
+        XTerm*color15: ${TEST_COLORS_HEX.color15}`
 
-    expect('#XTerm*foreground: #ff22AA').not.toMatch(COLOR_LINE_REGEXP)
-    expect('foreground: ##ff22AA').not.toMatch(COLOR_LINE_REGEXP)
-})
-
-test('transform', () => {
-    const _transform = transform(TEST_COLORS)
-
-    expect(_transform('XTerm*foreground: #ffaa22')).toBe('XTerm*foreground: #FFFFFF')
-    expect(_transform('XTerm*color12: #ffaa22')).toBe('XTerm*color12: #121212')
-})
-
-test('transform maintains whitespace and trailing chars', () => {
-    const _transform = transform(TEST_COLORS)
-
-    expect(_transform('XTerm*foreground : #ffaa22        #foo')).toBe(
-        'XTerm*foreground : #FFFFFF        #foo'
-    )
-    expect(_transform('XTerm*color12   :   #ffaa22')).toBe('XTerm*color12   :   #121212')
+    expect(run(TEST_COLORS_HEX)(config)).toEqual(expected)
 })

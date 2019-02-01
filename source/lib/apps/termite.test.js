@@ -1,56 +1,56 @@
-const { COLOR_LINE_REGEXP, getColor, transform } = require('../termite')
-const { TEST_COLORS } = require('./shared')
+const { run } = require('./termite')
+const { TEST_COLORS_HEX } = require('../testShared.js')
 
-const colorNames = [
-    'foreground',
-    'foreground_bold',
-    'cursor',
-    'background',
-    'color0',
-    'color1',
-    'color2',
-    'color3',
-    'color4',
-    'color5',
-    'color6',
-    'color7',
-    'color8',
-    'color9',
-    'color10',
-    'color11',
-    'color12',
-    'color13',
-    'color14',
-    'color15',
-]
+test('run', () => {
+    let config = `
+#foreground_bold = #ffffff
+#cursor = #dcdccc
+#cursor_foreground = #dcdccc
+foreground = rgba(175, 183, 192, 1.0)
+background = rgba(44, 45, 48, 1.0)
+#highlight = #242424
+color0 = rgba(44, 45, 48, 1.0)
+color1 = rgba(190, 134, 140, 1.0)
+color2 = rgba(127, 157, 119, 1.0)
+color3 = rgba(171, 145, 109, 1.0)
+color4 = rgba(117, 154, 189, 1.0)
+color5 = rgba(168, 140, 179, 1.0)
+color6 = rgba(93, 161, 159, 1.0)
+color7 = rgba(175, 183, 192, 1.0)
+color8 = rgba(54, 58, 62, 1.0)
+color9 = rgba(190, 134, 140, 1.0)
+color10 = rgba(127, 157, 119, 1.0)
+color11 = rgba(171, 145, 109, 1.0)
+color12 = rgba(117, 154, 189, 1.0)
+color13 = rgba(168, 140, 179, 1.0)
+color14 = rgba(93, 161, 159, 1.0)
+color15 = rgba(203, 210, 217, 1.0)
+`
 
-test('COLOR_LINE_REGEXP', () => {
-    colorNames.forEach(c => {
-        expect(`${c} = #ff22AA`).toMatch(COLOR_LINE_REGEXP)
-    })
+    let expected = `
+#foreground_bold = #ffffff
+#cursor = #dcdccc
+#cursor_foreground = #dcdccc
+foreground = rgba(175, 183, 192, 1.0)
+background = rgba(44, 45, 48, 1.0)
+#highlight = #242424
+color0 = rgba(44, 45, 48, 1.0)
+color1 = rgba(190, 134, 140, 1.0)
+color2 = rgba(127, 157, 119, 1.0)
+color3 = rgba(171, 145, 109, 1.0)
+color4 = rgba(117, 154, 189, 1.0)
+color5 = rgba(168, 140, 179, 1.0)
+color6 = rgba(93, 161, 159, 1.0)
+color7 = rgba(175, 183, 192, 1.0)
+color8 = rgba(54, 58, 62, 1.0)
+color9 = rgba(190, 134, 140, 1.0)
+color10 = rgba(127, 157, 119, 1.0)
+color11 = rgba(171, 145, 109, 1.0)
+color12 = rgba(117, 154, 189, 1.0)
+color13 = rgba(168, 140, 179, 1.0)
+color14 = rgba(93, 161, 159, 1.0)
+color15 = rgba(203, 210, 217, 1.0)
+`
 
-    expect('#foreground = #ff22AA').not.toMatch(COLOR_LINE_REGEXP)
-    expect('foreground = ##ff22AA').not.toMatch(COLOR_LINE_REGEXP)
-})
-
-test('getColor', () => {
-    expect(getColor(TEST_COLORS, 'foreground')).toBe(TEST_COLORS.foreground)
-    expect(getColor(TEST_COLORS, 'foreground_bold')).toBe(TEST_COLORS.foreground)
-    expect(getColor(TEST_COLORS, 'background')).toBe(TEST_COLORS.background)
-    expect(getColor(TEST_COLORS, 'color15')).toBe(TEST_COLORS.color15)
-    expect(getColor(TEST_COLORS, 'color4')).toBe(TEST_COLORS.color4)
-})
-
-test('transform', () => {
-    const _transform = transform(TEST_COLORS)
-
-    expect(_transform('foreground = #ffaa22')).toBe('foreground = #FFFFFF')
-    expect(_transform('color12 = #ffaa22')).toBe('color12 = #121212')
-})
-
-test('transform maintains whitespace and trailing chars', () => {
-    const _transform = transform(TEST_COLORS)
-
-    expect(_transform('foreground = #ffaa22        #foo')).toBe('foreground = #FFFFFF        #foo')
-    expect(_transform('color12   =   #ffaa22')).toBe('color12   =   #121212')
+    expect(run(TEST_COLORS_HEX)(config)).toEqual(expected)
 })

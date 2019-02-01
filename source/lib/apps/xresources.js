@@ -1,9 +1,12 @@
-const transform = require('../transform.js')
+const transform = require('../transform')
 const path = require('path')
 const os = require('os')
 const xdgBase = require('xdg-basedir')
 
-const lineMatchRegExp = /^(\s*)(active_border_color|inactive_border_color|active_tab_foreground|active_tab_background|inactive_tab_foreground|inactive_tab_background|background|foreground|selection_foreground|selection_background|color\d{1,2}|url_color|cursor)(\s*)#\w{6}(.*)/
+const lineMatchRegExp = /^(\s*)\*\.(foreground|background|color\d{1,2})([\s:]*)#\w{6}(.*)/i
+
+const configName = '.Xresources'
+const paths = [path.join(xdgBase.config, configName), path.join(os.homedir(), configName)]
 
 const shouldTransformLine = line => lineMatchRegExp.test(line)
 
@@ -16,13 +19,6 @@ const getNewLine = (line, newColorValue) => {
 }
 
 const getColorName = line => lineMatchRegExp.exec(line).slice(1)[1]
-
-const configName = 'kitty.conf'
-const paths = [
-    path.join(xdgBase.config, 'kitty', configName),
-    path.join(xdgBase.config, configName),
-    path.join(os.homedir(), configName),
-]
 
 const run = transform(shouldTransformLine, getColorName, getNewLine)
 

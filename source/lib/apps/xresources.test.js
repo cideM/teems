@@ -1,48 +1,46 @@
-const { COLOR_LINE_REGEXP, transform } = require('../Xresources')
-const { TEST_COLORS } = require('./shared')
+const { run } = require('./xresources')
+const { TEST_COLORS_HEX } = require('../testShared.js')
 
-const colorNames = [
-    'foreground',
-    'background',
-    'color0',
-    'color1',
-    'color2',
-    'color3',
-    'color4',
-    'color5',
-    'color6',
-    'color7',
-    'color8',
-    'color9',
-    'color10',
-    'color11',
-    'color12',
-    'color13',
-    'color14',
-    'color15',
-]
+test('run', () => {
+    let config = `
+        *.foreground: #c5c8c6
+        *.background: #1d1f21
+        *.color0: #1d1f21
+        *.color8: #969896
+        *.color1: #cc6666
+        *.color9: #cc6666
+        *.color2: #b5bd68
+        *.color10: #b5bd68
+        *.color3: #f0c674
+        *.color11: #f0c674
+        *.color4: #81a2be
+        *.color12: #81a2be
+        *.color5: #b294bb
+        *.color13: #b294bb
+        *.color6: #8abeb7
+        *.color14: #8abeb7
+        *.color7: #c5c8c6
+        *.color15: #ffffff`
 
-test('COLOR_LINE_REGEXP', () => {
-    colorNames.forEach(c => {
-        expect(`*.${c}: #ff22AA`).toMatch(COLOR_LINE_REGEXP)
-    })
+    let expected = `
+        *.foreground: ${TEST_COLORS_HEX.foreground}
+        *.background: ${TEST_COLORS_HEX.background}
+        *.color0: ${TEST_COLORS_HEX.color0}
+        *.color8: ${TEST_COLORS_HEX.color8}
+        *.color1: ${TEST_COLORS_HEX.color1}
+        *.color9: ${TEST_COLORS_HEX.color9}
+        *.color2: ${TEST_COLORS_HEX.color2}
+        *.color10: ${TEST_COLORS_HEX.color10}
+        *.color3: ${TEST_COLORS_HEX.color3}
+        *.color11: ${TEST_COLORS_HEX.color11}
+        *.color4: ${TEST_COLORS_HEX.color4}
+        *.color12: ${TEST_COLORS_HEX.color12}
+        *.color5: ${TEST_COLORS_HEX.color5}
+        *.color13: ${TEST_COLORS_HEX.color13}
+        *.color6: ${TEST_COLORS_HEX.color6}
+        *.color14: ${TEST_COLORS_HEX.color14}
+        *.color7: ${TEST_COLORS_HEX.color7}
+        *.color15: ${TEST_COLORS_HEX.color15}`
 
-    expect('#*.foreground: #ff22AA').not.toMatch(COLOR_LINE_REGEXP)
-    expect('foreground: ##ff22AA').not.toMatch(COLOR_LINE_REGEXP)
-})
-
-test('transform', () => {
-    const _transform = transform(TEST_COLORS)
-
-    expect(_transform('*.foreground: #ffaa22')).toBe('*.foreground: #FFFFFF')
-    expect(_transform('*.color12: #ffaa22')).toBe('*.color12: #121212')
-})
-
-test('transform maintains whitespace and trailing chars', () => {
-    const _transform = transform(TEST_COLORS)
-
-    expect(_transform('*.foreground : #ffaa22        #foo')).toBe(
-        '*.foreground : #FFFFFF        #foo'
-    )
-    expect(_transform('*.color12   :   #ffaa22')).toBe('*.color12   :   #121212')
+    expect(run(TEST_COLORS_HEX)(config)).toEqual(expected)
 })
