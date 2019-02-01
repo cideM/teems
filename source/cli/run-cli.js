@@ -4,7 +4,7 @@ const fs = require('fs')
 const meow = require('meow')
 const listApps = require('../lib/listApps')
 const activateTheme = require('../lib/activateTheme')
-const checkTheme = require('../lib/checkTheme')
+const readTheme = require('../lib/readTheme')
 const listThemes = require('../lib/listThemes')
 
 const cli = meow(
@@ -50,15 +50,12 @@ const main = (configPath, themeName, flags) => {
         throw new Error(`Could not read file ${configPath}`)
     }
 
-    // Throws error on invalid theme
-    themes.forEach(checkTheme)
-
     if (themeName) {
         const theme = themes.find(t => t.name === themeName)
 
         if (!theme) throw new Error(`No theme with name ${themeName} found in ${configPath}`)
 
-        activateTheme(theme, flags.dry)
+        activateTheme(readTheme(theme), flags.dry)
     } else listThemes(themes)
 }
 

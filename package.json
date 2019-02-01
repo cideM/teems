@@ -1,5 +1,5 @@
 {
-  "name": "teems",
+  "name": "teemsjs",
   "version": "0.5.3",
   "description": "Easily manage terminal emulator color schemes.",
   "license": "MIT",
@@ -10,9 +10,9 @@
     "type": "git",
     "url": "https://github.com/cideM/teems.git"
   },
-  "main": "./source/lib/foo",
+  "main": "./source/lib/apps",
   "bin": {
-    "teems-cli": "./source/cli/run-cli.js"
+    "teems-js": "./source/cli/run-cli.js"
   },
   "homepage": "https://github.com/cideM/teems",
   "bugs": "https://github.com/cideM/teems/issues",
