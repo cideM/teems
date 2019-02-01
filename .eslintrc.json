@@ -1,13 +1,15 @@
 {
-  "extends": ["eslint:recommended", "plugin:node/recommended", "prettier"],
-  "plugins": ["prettier", "node", "jest"],
-  "env": {
-    "node": true,
-    "jest/globals": true
-
-  },
-  "rules": {
-    "prettier/prettier": "error",
-    "no-console": 0
-  }
+    "extends": ["eslint:recommended", "plugin:node/recommended", "prettier"],
+    "plugins": ["prettier", "node", "jest"],
+    "env": {
+        "node": true,
+        "jest/globals": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 9
+    },
+    "rules": {
+        "prettier/prettier": "error",
+        "no-console": 0
+    }
 }

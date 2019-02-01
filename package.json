@@ -4,7 +4,7 @@
   "description": "Easily manage terminal emulator color schemes.",
   "license": "MIT",
   "engines": {
-    "node": ">= 8"
+    "node": ">= 10"
   },
   "repository": {
     "type": "git",

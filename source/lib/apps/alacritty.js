@@ -1,111 +1,62 @@
 const path = require('path')
 const os = require('os')
 const xdgBase = require('xdg-basedir')
-const readline = require('readline')
-const fs = require('fs')
-const tmp = require('tmp')
+const transform = require('../transform')
 
-const ALACRITTY_COLOR_LINE_REGEXP = /^(\s*)(cursor|text|foreground|background|black|red|green|yellow|blue|magenta|cyan|white):(\s*)'0x(\w{6})'(.*)/
+const lineMatchRegExp = /^(\s*)(cursor|text|foreground|background|black|red|green|yellow|blue|magenta|cyan|white):(\s*)'0x(\w{6})'(.*)/
 
-const ALACRITTY_BRIGHT_REGEXP = /^\s*bright:/
+const shouldTransformLine = line => lineMatchRegExp.test(line)
 
-const getColorNum = isBright => num => (isBright ? num + 8 : num)
+// Return the color name for the theme, **not** the name in the
+// configuration file
+const getColorName = (line, state) => {
+    const { isBright } = state
+    const matches = lineMatchRegExp.exec(line)
+    const matchedName = matches[2]
 
-const newColor = (colors, color, isBright) => {
-    const num = getColorNum(isBright)
-
-    switch (color) {
-        case 'foreground':
-            return colors.foreground
-        case 'background':
-            return colors.background
-        case 'black':
-            return colors[`color${num(0)}`]
-        case 'red':
-            return colors[`color${num(1)}`]
-        case 'green':
-            return colors[`color${num(2)}`]
-        case 'yellow':
-            return colors[`color${num(3)}`]
-        case 'blue':
-            return colors[`color${num(4)}`]
-        case 'magenta':
-            return colors[`color${num(5)}`]
-        case 'cyan':
-            return colors[`color${num(6)}`]
-        case 'white':
-            return colors[`color${num(7)}`]
+    const map = {
+        text: 'text',
+        cursor: 'cursor',
+        foreground: 'foreground',
+        background: 'background',
+        black: isBright ? 'color8' : 'color0',
+        red: isBright ? 'color9' : 'color1',
+        green: isBright ? 'color10' : 'color2',
+        yellow: isBright ? 'color11' : 'color3',
+        blue: isBright ? 'color12' : 'color4',
+        magenta: isBright ? 'color13' : 'color5',
+        cyan: isBright ? 'color14' : 'color6',
+        white: isBright ? 'color15' : 'color7',
     }
+
+    return map[matchedName]
 }
 
-const transform = (colors, isBright, str) => {
-    const match = ALACRITTY_COLOR_LINE_REGEXP.exec(str)
+const newLineRegExp = /(.*'0x)(\w{6})('.*)/
 
-    if (match) {
-        // unused vars
-        // eslint-disable-next-line
-        const [_, ws1, color, ws2, __, trailing] = match
+const getNewLine = (line, newColorValue) => {
+    const matches = newLineRegExp.exec(line).slice(1)
 
-        const newColorValue = newColor(colors, color, isBright)
-
-        return `${ws1}${color}:${ws2}'0x${newColorValue.slice(1)}'${trailing}`
-    } else return str
+    // Omit the old color value, which is capture group 2 (~ index 1)
+    return matches[0] + newColorValue + matches[2]
 }
+
+const isBrightColorBlock = /^\s*bright:\s*$/
+
+const getNewState = (line, oldState) => ({
+    isBright: isBrightColorBlock.test(line) || oldState.isBright,
+})
 
 const configName = 'alacritty.yml'
+
 const paths = [
     path.join(xdgBase.config, 'alacritty', configName),
     path.join(xdgBase.config, configName),
     path.join(os.homedir(), configName),
 ]
 
-// Alacritty is the only app where you need surrounding context to interpret
-// color names. It uses e.g., black for both color0 and color8. The correct
-// color is then determined by whether black appears in the normal or bright
-// block.  That's why alacritty does not use the perLine function and instead
-// mostly implements it again, but while keeping track of the the bright color
-// block.
-const run = (colors, { dry }) =>
-    paths.filter(fs.existsSync).map(
-        p =>
-            new Promise(res => {
-                let rl
-                let isBright
+const run = transform(shouldTransformLine, getColorName, getNewLine, getNewState, {
+    isBright: false,
+})
 
-                const tmpFile = tmp.fileSync()
-
-                rl = readline.createInterface({
-                    input: fs.createReadStream(p),
-                    output: fs.createWriteStream(tmpFile.name),
-                })
-
-                rl.on('line', function(l) {
-                    isBright = ALACRITTY_BRIGHT_REGEXP.test(l)
-
-                    const next = transform(colors, isBright, l)
-
-                    if (dry) console.log(`${next}`)
-
-                    this.output.write(`${dry ? l : next}\n`)
-                })
-
-                rl.on('close', () => {
-                    fs.renameSync(tmpFile.name, p)
-                    tmpFile.removeCallback()
-                    res(p)
-                })
-            })
-    )
-
-const app = {
-    name: 'alacritty',
-    run,
-}
-
-module.exports = {
-    newColor,
-    ALACRITTY_COLOR_LINE_REGEXP,
-    ALACRITTY_BRIGHT_REGEXP,
-    transform,
-    app,
-}
+module.exports = { run, paths }

@@ -1,5 +1,7 @@
 const TEST_COLORS = {
     foreground: '#FFFFFF',
+    cursor: '#CCCCCC',
+    text: '#DDDDDD',
     background: '#BBBBBB',
     color0: '#000000',
     color1: '#111111',
