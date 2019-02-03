@@ -1,62 +1,72 @@
 const path = require('path')
-const os = require('os')
-const xdgBase = require('xdg-basedir')
-const transform = require('../transform')
+const { ColorNotFoundError } = require('../../errorTypes.js')
+const { rgbToHex } = require('../shared.js')
 
-const lineMatchRegExp = /^(\s*)(cursor|text|foreground|background|black|red|green|yellow|blue|magenta|cyan|white):(\s*)'0x(\w{6})'(.*)/
-
-const shouldTransformLine = line => lineMatchRegExp.test(line)
+const lineMatchRegExp = /^\s*(cursor|text|foreground|background|black|red|green|yellow|blue|magenta|cyan|white):\s*['"]0x(\w{6})['"].*/
 
 // Return the color name for the theme, **not** the name in the
 // configuration file
-const getColorName = (line, state) => {
-    const { isBright } = state
-    const matches = lineMatchRegExp.exec(line)
-    const matchedName = matches[2]
-
+const getThemeColorName = name => {
     const map = {
-        text: 'text',
-        cursor: 'cursor',
-        foreground: 'foreground',
-        background: 'background',
-        black: isBright ? 'color8' : 'color0',
-        red: isBright ? 'color9' : 'color1',
-        green: isBright ? 'color10' : 'color2',
-        yellow: isBright ? 'color11' : 'color3',
-        blue: isBright ? 'color12' : 'color4',
-        magenta: isBright ? 'color13' : 'color5',
-        cyan: isBright ? 'color14' : 'color6',
-        white: isBright ? 'color15' : 'color7',
+        text: ['text', 'text'],
+        cursor: ['cursor', 'cursor'],
+        foreground: ['foreground', 'foreground'],
+        background: ['background', 'background'],
+        black: ['color0', 'color8'],
+        red: ['color1', 'color9'],
+        green: ['color2', 'color10'],
+        yellow: ['color3', 'color11'],
+        blue: ['color4', 'color12'],
+        magenta: ['color5', 'color13'],
+        cyan: ['color6', 'color14'],
+        white: ['color7', 'color15'],
     }
 
-    return map[matchedName]
+    return map[name]
 }
-
-const newLineRegExp = /(.*'0x)(\w{6})('.*)/
-
-const getNewLine = (line, newColorValue) => {
-    const matches = newLineRegExp.exec(line).slice(1)
-
-    // Omit the old color value, which is capture group 2 (~ index 1)
-    return matches[0] + newColorValue + matches[2]
-}
-
-const isBrightColorBlock = /^\s*bright:\s*$/
-
-const getNewState = (line, oldState) => ({
-    isBright: isBrightColorBlock.test(line) || oldState.isBright,
-})
 
 const configName = 'alacritty.yml'
 
-const paths = [
-    path.join(xdgBase.config, 'alacritty', configName),
-    path.join(xdgBase.config, configName),
-    path.join(os.homedir(), configName),
-]
+const paths = [path.join('alacritty', configName), configName]
 
-const run = transform(shouldTransformLine, getColorName, getNewLine, getNewState, {
-    isBright: false,
-})
+const run = (colors, input) => {
+    const lines = input.split('\n')
 
-module.exports = { run, paths }
+    const { newLines } = lines.reduce(
+        (acc, line) => {
+            const { newLines, mode } = acc
+            const trimmed = line.trim()
+
+            if (trimmed === 'bright:') return { mode: 'bright', newLines: newLines.concat(line) }
+            if (trimmed === 'normal:') return { mode: 'normal', newLines: newLines.concat(line) }
+
+            const matches = lineMatchRegExp.exec(line)
+
+            if (matches) {
+                const [colorName, value] = matches.slice(1)
+                const themeColorName = getThemeColorName(colorName)[mode === 'bright' ? 1 : 0]
+
+                const newColorValue = colors[themeColorName]
+
+                if (!newColorValue) throw new ColorNotFoundError(themeColorName)
+
+                const replaced = line.replace(value, rgbToHex(newColorValue).slice(1))
+
+                return { mode, newLines: newLines.concat(replaced) }
+            } else {
+                return { mode, newLines: newLines.concat(line) }
+            }
+        },
+        { mode: 'normal', newLines: [] }
+    )
+
+    return newLines.join('\n')
+}
+
+const app = {
+    name: 'alacritty',
+    run,
+    paths,
+}
+
+module.exports = { app, run, paths }

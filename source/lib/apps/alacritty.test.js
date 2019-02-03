@@ -1,5 +1,5 @@
 const { run } = require('./alacritty')
-const { TEST_COLORS } = require('./shared')
+const { TEST_COLORS, TEST_COLORS_HEX } = require('../testShared.js')
 
 test('run', () => {
     let input = `
@@ -34,35 +34,35 @@ test('run', () => {
         `
 
     let expected = `
-        background:     '0x${TEST_COLORS.background}'
-        foreground:     '0x${TEST_COLORS.foreground}'
+        background:     '0x${TEST_COLORS_HEX.background.slice(1)}'
+        foreground:     '0x${TEST_COLORS_HEX.foreground.slice(1)}'
 
         cursor:
-            cursor:       '0x${TEST_COLORS.cursor}'
-            text:         '0x${TEST_COLORS.text}'
+            cursor:       '0x${TEST_COLORS_HEX.cursor.slice(1)}'
+            text:         '0x${TEST_COLORS_HEX.text.slice(1)}'
 
         normal:
-            black:       '0x${TEST_COLORS.color0}'
-            red:         '0x${TEST_COLORS.color1}'
-            green:       '0x${TEST_COLORS.color2}'
+            black:       '0x${TEST_COLORS_HEX.color0.slice(1)}'
+            red:         '0x${TEST_COLORS_HEX.color1.slice(1)}'
+            green:       '0x${TEST_COLORS_HEX.color2.slice(1)}'
         #   green:       '0xA3BE8C'
-            yellow:      '0x${TEST_COLORS.color3}'
-            blue:        '0x${TEST_COLORS.color4}'
-            magenta:     '0x${TEST_COLORS.color5}'
-            cyan:        '0x${TEST_COLORS.color6}'
-            white:       '0x${TEST_COLORS.color7}'
+            yellow:      '0x${TEST_COLORS_HEX.color3.slice(1)}'
+            blue:        '0x${TEST_COLORS_HEX.color4.slice(1)}'
+            magenta:     '0x${TEST_COLORS_HEX.color5.slice(1)}'
+            cyan:        '0x${TEST_COLORS_HEX.color6.slice(1)}'
+            white:       '0x${TEST_COLORS_HEX.color7.slice(1)}'
 
         # Bright colors
         bright:
-            black:       '0x${TEST_COLORS.color8}'
-            red:         '0x${TEST_COLORS.color9}'
-            green:       '0x${TEST_COLORS.color10}'
-            yellow:      '0x${TEST_COLORS.color11}'
-            blue:        '0x${TEST_COLORS.color12}'
-            magenta:     '0x${TEST_COLORS.color13}'
-            cyan:        '0x${TEST_COLORS.color14}'
-            white:       '0x${TEST_COLORS.color15}'
+            black:       '0x${TEST_COLORS_HEX.color8.slice(1)}'
+            red:         '0x${TEST_COLORS_HEX.color9.slice(1)}'
+            green:       '0x${TEST_COLORS_HEX.color10.slice(1)}'
+            yellow:      '0x${TEST_COLORS_HEX.color11.slice(1)}'
+            blue:        '0x${TEST_COLORS_HEX.color12.slice(1)}'
+            magenta:     '0x${TEST_COLORS_HEX.color13.slice(1)}'
+            cyan:        '0x${TEST_COLORS_HEX.color14.slice(1)}'
+            white:       '0x${TEST_COLORS_HEX.color15.slice(1)}'
         `
 
-    expect(run(TEST_COLORS)(input)).toEqual(expected)
+    expect(run(TEST_COLORS, input)).toEqual(expected)
 })

@@ -1,30 +1,40 @@
 const path = require('path')
-const transform = require('../transform.js')
-const os = require('os')
-const xdgBase = require('xdg-basedir')
+const { ColorNotFoundError } = require('../../errorTypes.js')
 
-const lineMatchRegExp = /^(\s*)(foreground|foreground_bold|cursor|cursor_foreground|highlight|background|color\d{1,2})([\s=]*)#\w{6}(.*)/
+const re = /^\s*(foreground|foreground_bold|cursor|cursor_foreground|highlight|background|color\d{1,2})[\s=]*(#\w{6}|rgba\([\d,\s,.]*\)).*/
 
 const configName = 'config'
-const paths = [
-    path.join(xdgBase.config, 'termite', configName),
-    path.join(xdgBase.config, configName),
-    path.join(os.homedir(), configName),
-]
+const paths = [path.join('termite', configName), configName]
 
-const shouldTransformLine = line => lineMatchRegExp.test(line)
+const run = (colors, input) => {
+    return input
+        .split('\n')
+        .map(line => {
+            const matches = re.exec(line)
 
-const newLineRegExp = /^(.*=\s*)(#\w{6}|rgba\(.*\))(.*)/
+            if (matches) {
+                const [colorName, value] = matches.slice(1)
 
-const getNewLine = (line, newColorValue) => {
-    const matches = newLineRegExp.exec(line).slice(1)
+                const newValue = colors[colorName]
+                if (!newValue) throw new ColorNotFoundError(colorName)
 
-    return matches[0] + newColorValue + matches[2]
+                const [r, g, b, a] = newValue
+                const formatted = `rgba(${r},${g},${b},${parseFloat(a)})`
+
+                return line.replace(value, formatted)
+            } else return line
+        })
+        .join('\n')
 }
 
-const getColorName = line => lineMatchRegExp.exec(line).slice(1)[1]
+const app = {
+    name: 'termite',
+    run,
+    paths,
+}
 
-const run = transform(shouldTransformLine, getColorName, getNewLine)
 module.exports = {
-    run, paths
+    app,
+    run,
+    paths,
 }

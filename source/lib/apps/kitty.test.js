@@ -1,5 +1,5 @@
 const { run } = require('./kitty')
-const { TEST_COLORS_HEX } = require('../testShared.js')
+const { TEST_COLORS_HEX, TEST_COLORS } = require('../testShared.js')
 
 test('run', () => {
     let config = `
@@ -62,5 +62,5 @@ test('run', () => {
         color7 ${TEST_COLORS_HEX.color7}
         color15 ${TEST_COLORS_HEX.color15}`
 
-    expect(run(TEST_COLORS_HEX)(config)).toEqual(expected)
+    expect(run(TEST_COLORS, config)).toEqual(expected)
 })

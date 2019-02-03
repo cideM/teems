@@ -1,28 +1,37 @@
-const transform = require('../transform')
-const path = require('path')
-const os = require('os')
-const xdgBase = require('xdg-basedir')
+const { ColorNotFoundError } = require('../../errorTypes.js')
+const { rgbToHex } = require('../shared.js')
 
-const lineMatchRegExp = /^(\s*)\*\.(foreground|background|color\d{1,2})([\s:]*)#\w{6}(.*)/i
+const re = /^\s*\*\.(foreground|background|color\d{1,2})[\s:]*(#\w{6}).*/i
 
 const configName = '.Xresources'
-const paths = [path.join(xdgBase.config, configName), path.join(os.homedir(), configName)]
+const paths = [configName]
 
-const shouldTransformLine = line => lineMatchRegExp.test(line)
+const run = (colors, input) => {
+    return input
+        .split('\n')
+        .map(line => {
+            const matches = re.exec(line)
 
-const newLineRegExp = /^(.*)(#\w{6})(.*)/i
+            if (matches) {
+                const [colorName, value] = matches.slice(1)
 
-const getNewLine = (line, newColorValue) => {
-    const matches = newLineRegExp.exec(line).slice(1)
+                const newValue = colors[colorName]
+                if (!newValue) throw new ColorNotFoundError(colorName)
 
-    return matches[0] + newColorValue + matches[2]
+                return line.replace(value, rgbToHex(newValue))
+            } else return line
+        })
+        .join('\n')
 }
 
-const getColorName = line => lineMatchRegExp.exec(line).slice(1)[1]
-
-const run = transform(shouldTransformLine, getColorName, getNewLine)
+const app = {
+    name: 'XResources',
+    run,
+    paths,
+}
 
 module.exports = {
+    app,
     run,
     paths,
 }

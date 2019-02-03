@@ -55,7 +55,9 @@ const main = (configPath, themeName, flags) => {
 
         if (!theme) throw new Error(`No theme with name ${themeName} found in ${configPath}`)
 
-        activateTheme(readTheme(theme), flags.dry)
+        const transformed = readTheme(theme)
+
+        activateTheme(transformed, flags.dry)
     } else listThemes(themes)
 }
 
