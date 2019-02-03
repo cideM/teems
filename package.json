@@ -35,8 +35,6 @@
   ],
   "dependencies": {
     "meow": "^5.0.0",
-    "mkdirp": "^0.5.1",
-    "tmp": "^0.0.33",
     "xdg-basedir": "^3.0.0"
   },
   "devDependencies": {
