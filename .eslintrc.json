@@ -1,5 +1,5 @@
 {
-    "extends": ["eslint:recommended", "plugin:node/recommended", "prettier"],
+    "extends": ["eslint:recommended", "plugin:node/recommended", "prettier", "oclif"],
     "plugins": ["prettier", "node", "jest"],
     "env": {
         "node": true,

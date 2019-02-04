@@ -1,48 +1,57 @@
 {
-  "name": "teemsjs",
-  "version": "0.5.3",
-  "description": "Easily manage terminal emulator color schemes.",
-  "license": "MIT",
-  "engines": {
-    "node": ">= 10"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cideM/teems.git"
-  },
-  "main": "./source/lib/apps",
-  "bin": {
-    "teems-js": "./source/cli/run-cli.js"
-  },
-  "homepage": "https://github.com/cideM/teems",
-  "bugs": "https://github.com/cideM/teems/issues",
-  "author": {
-    "name": "Florian Beeres",
-    "email": "fbeeres@gmail.com",
-    "url": "https://www.github.com/cideM"
-  },
-  "scripts": {
-    "lint": "eslint --fix --ext .js ./",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "format": "prettier \"{source}/**/*.js\" --config prettierrc.yaml --write",
-    "postinstall": "node source/cli/run-post-install.js"
-  },
-  "keywords": [
-    "Themes,",
-    "Node",
-    ""
-  ],
-  "dependencies": {
-    "meow": "^5.0.0",
-    "xdg-basedir": "^3.0.0"
-  },
-  "devDependencies": {
-    "eslint": "^5.6.1",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-jest": "^21.24.1",
-    "eslint-plugin-node": "^6.0.0",
-    "eslint-plugin-prettier": "^2.6.0",
-    "prettier": "^1.10.2"
-  }
+    "name": "teemsjs",
+    "version": "0.5.3",
+    "description": "Easily manage terminal emulator color schemes.",
+    "license": "MIT",
+    "engines": {
+        "node": ">= 10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cideM/teems.git"
+    },
+    "main": "./src/index",
+    "bin": {
+        "teems-js": "./bin/run"
+    },
+    "homepage": "https://github.com/cideM/teems",
+    "bugs": "https://github.com/cideM/teems/issues",
+    "author": {
+        "name": "Florian Beeres",
+        "email": "fbeeres@gmail.com",
+        "url": "https://www.github.com/cideM"
+    },
+    "scripts": {
+        "lint": "eslint --fix --ext .js ./",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "format": "prettier \"{src}/**/*.js\" --config prettierrc.yaml --write",
+        "postinstall": "node src/cli/run-post-install.js",
+        "prepack": "oclif-dev manifest && oclif-dev readme",
+        "version": "oclif-dev readme && git add README.md",
+        "postpack": "rm -f oclif.manifest.json"
+    },
+    "files": ["/bin", "/npm-shrinkwrap.json", "/oclif.manifest.json", "/src"],
+    "keywords": ["Themes,", "Node", ""],
+    "dependencies": {
+        "xdg-basedir": "^3.0.0",
+        "@oclif/command": "^1.5.8",
+        "@oclif/config": "^1.12.4",
+        "@oclif/plugin-help": "^2.1.6"
+    },
+    "devDependencies": {
+        "eslint": "^5.6.1",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-plugin-jest": "^21.24.1",
+        "eslint-plugin-node": "^6.0.0",
+        "eslint-plugin-prettier": "^2.6.0",
+        "@oclif/dev-cli": "^1.21.0",
+        "globby": "^8.0.2",
+        "prettier": "^1.10.2"
+    },
+    "oclif": {
+        "commands": "./src/commands",
+        "bin": "mynewcli",
+        "plugins": ["@oclif/plugin-help"]
+    }
 }
