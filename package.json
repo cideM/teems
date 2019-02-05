@@ -31,8 +31,17 @@
         "version": "oclif-dev readme && git add README.md",
         "postpack": "rm -f oclif.manifest.json"
     },
-    "files": ["/bin", "/npm-shrinkwrap.json", "/oclif.manifest.json", "/src"],
-    "keywords": ["Themes,", "Node", ""],
+    "files": [
+        "/bin",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json",
+        "/src"
+    ],
+    "keywords": [
+        "Themes,",
+        "Node",
+        ""
+    ],
     "dependencies": {
         "xdg-basedir": "^3.0.0",
         "@oclif/command": "^1.5.8",
@@ -40,18 +49,21 @@
         "@oclif/plugin-help": "^2.1.6"
     },
     "devDependencies": {
+        "@oclif/dev-cli": "^1.21.0",
         "eslint": "^5.6.1",
         "eslint-config-prettier": "^2.9.0",
         "eslint-plugin-jest": "^21.24.1",
         "eslint-plugin-node": "^6.0.0",
         "eslint-plugin-prettier": "^2.6.0",
-        "@oclif/dev-cli": "^1.21.0",
         "globby": "^8.0.2",
+        "jest": "^24.0.0",
         "prettier": "^1.10.2"
     },
     "oclif": {
         "commands": "./src/commands",
         "bin": "teems-js",
-        "plugins": ["@oclif/plugin-help"]
+        "plugins": [
+            "@oclif/plugin-help"
+        ]
     }
 }

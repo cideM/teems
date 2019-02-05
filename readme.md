@@ -11,7 +11,7 @@ I have spent obscene amounts of time trying out different color themes for termi
 ## Getting started
 
 ```shell
-npm install --global teemsjs
+npm install --global teems-js
 cd ~/.config/             # It uses your $XDG_CONFIG_DIR
 nvim themes.json          # Modifiy/add themes
 teems-js activate snow    # Activate theme
