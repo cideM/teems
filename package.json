@@ -1,6 +1,6 @@
 {
-    "name": "teemsjs",
-    "version": "0.5.3",
+    "name": "teems-js",
+    "version": "0.6.0",
     "description": "Easily manage terminal emulator color schemes.",
     "license": "MIT",
     "engines": {
@@ -18,7 +18,7 @@
     "bugs": "https://github.com/cideM/teems/issues",
     "author": {
         "name": "Florian Beeres",
-        "email": "fbeeres@gmail.com",
+        "email": "yuuki@protonmail.com",
         "url": "https://www.github.com/cideM"
     },
     "scripts": {
@@ -51,7 +51,7 @@
     },
     "oclif": {
         "commands": "./src/commands",
-        "bin": "mynewcli",
+        "bin": "teems-js",
         "plugins": ["@oclif/plugin-help"]
     }
 }
